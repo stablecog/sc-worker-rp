@@ -11,13 +11,10 @@ WORKDIR /app
 
 # Install dependencies
 RUN python3.11 -m pip install --upgrade pip && \
-  python3.11 -m pip install --ignore-installed --upgrade -r requirements.txt --no-cache-dir && \
-  rm requirements.txt
+  python3.11 -m pip install --ignore-installed --upgrade -r requirements.txt --no-cache-dir
 
-# Copy the model-specific builder script
-COPY src/endpoints/${MODEL_NAME}/builder.py /app/builder.py
-RUN python3.11 /app/builder.py && \
-  rm /app/builder.py
+# Run the model-specific builder script if it exists
+RUN python3.11 /app/src/endpoints/${MODEL_NAME}/builder.py
 
 # Set the CMD to run the model-specific handler script
-CMD python3.11 -u src/endpoints/${MODEL_NAME}/handler.py
+CMD python3.11 -u /app/src/endpoints/${MODEL_NAME}/handler.py
