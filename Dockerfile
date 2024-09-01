@@ -1,4 +1,4 @@
-FROM runpod/base:0.6.2-cuda12.1.0
+FROM stablecog/cuda-torch:12.1.0-2.1.0-cudnn8-devel-ubuntu22.04
 
 # Define a build argument for the model name
 ARG MODEL_NAME
@@ -13,11 +13,11 @@ WORKDIR /
 COPY . .
 
 # Install dependencies
-RUN python3.11 -m pip install --upgrade pip && \
-  python3.11 -m pip install --ignore-installed --upgrade -r requirements.txt --no-cache-dir
+RUN python3 -m pip install --upgrade pip && \
+  python3 -m pip install --ignore-installed --upgrade -r requirements.txt --no-cache-dir
 
 # Run the model-specific builder script
-RUN python3.11 -m src.endpoints.${MODEL_NAME}.builder
+RUN python3 -m src.endpoints.${MODEL_NAME}.builder
 
 # Set the CMD to run the model-specific handler script
-CMD python3.11 -m src.endpoints.${MODEL_NAME}.handler
+CMD python3 -m src.endpoints.${MODEL_NAME}.handler
