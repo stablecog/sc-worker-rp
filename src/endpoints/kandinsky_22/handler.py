@@ -55,9 +55,9 @@ class Handler:
             inpaint=None,
         )
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            future_prior = executor.submit(self.load_base)
-            future_text2img = executor.submit(self.load_refiner)
-            future_inpaint = executor.submit(self.load_refiner)
+            future_prior = executor.submit(self.load_prior)
+            future_text2img = executor.submit(self.load_text2img)
+            future_inpaint = executor.submit(self.load_inpaint)
 
             self.pipe_object.prior = future_prior.result()
             self.pipe_object.text2img = future_text2img.result()
