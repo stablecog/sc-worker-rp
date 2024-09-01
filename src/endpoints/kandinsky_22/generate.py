@@ -180,7 +180,7 @@ def generate(
             output_images.append(out)
 
     output_images = crop_images(
-        image_array=output_images, width=input.width, height=input.height
+        images=output_images, width=input.width, height=input.height
     )
 
     inference_end = time.time()
