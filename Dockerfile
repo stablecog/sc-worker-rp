@@ -1,10 +1,10 @@
 FROM pytorch/pytorch:2.4.0-cuda12.4-cudnn9-devel
 
 # Define a build argument for the model name
-ARG MODEL_NAME
+ARG MODEL_FOLDER
 
 # Create an environment variable from the build argument
-ENV MODEL_NAME=${MODEL_NAME}
+ENV MODEL_FOLDER=${MODEL_FOLDER}
 
 # Set working directory
 WORKDIR /
@@ -17,7 +17,7 @@ RUN python3 -m pip install --upgrade pip && \
   python3 -m pip install --ignore-installed --upgrade -r requirements.txt --no-cache-dir
 
 # Run the model-specific builder script
-RUN python3 -m src.endpoints.${MODEL_NAME}.builder
+RUN python3 -m src.endpoints.${MODEL_FOLDER}.builder
 
 # Set the CMD to run the model-specific handler script
-CMD python3 -m src.endpoints.${MODEL_NAME}.handler
+CMD python3 -m src.endpoints.${MODEL_FOLDER}.handler
