@@ -46,6 +46,9 @@ last_created_at.txt
 pip-log.txt
 pip-delete-this-directory.txt
 
+# Temporary file for signed urls
+.signed.py
+
 # Unit test / coverage reports
 htmlcov/
 .tox/
