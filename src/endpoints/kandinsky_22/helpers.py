@@ -1,4 +1,4 @@
-from .constants import KANDINSKY_2_2_SCHEDULERS
+from .constants import KANDINSKY_22_SCHEDULERS
 from diffusers import (
     KandinskyV22Pipeline,
     KandinskyV22Img2ImgPipeline,
@@ -12,9 +12,9 @@ def get_scheduler(
         KandinskyV22Pipeline | KandinskyV22InpaintPipeline | KandinskyV22Img2ImgPipeline
     ),
 ):
-    if "from_config" in KANDINSKY_2_2_SCHEDULERS[name]:
-        return KANDINSKY_2_2_SCHEDULERS[name]["scheduler"].from_config(
+    if "from_config" in KANDINSKY_22_SCHEDULERS[name]:
+        return KANDINSKY_22_SCHEDULERS[name]["scheduler"].from_config(
             pipeline.scheduler.config
         )
     else:
-        return KANDINSKY_2_2_SCHEDULERS[name]["scheduler"]()
+        return KANDINSKY_22_SCHEDULERS[name]["scheduler"]()
