@@ -1,7 +1,7 @@
 from io import BytesIO
 import logging
 import time
-from typing import Any, Dict, Iterable, List
+from typing import List
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 import requests
@@ -54,7 +54,7 @@ def convert_and_upload_image_to_signed_url(upload_object: UploadObject) -> str:
         + list(range(431, 500))
         + list(range(501, 600)),  # List of status codes to retry on
         allowed_methods=["PUT"],  # HTTP methods to retry
-        backoff_factor=0.5,  # A backoff factor to apply between attempts
+        backoff_factor=1,  # A backoff factor to apply between attempts
     )
 
     # Create an HTTPAdapter with the retry strategy
@@ -79,17 +79,17 @@ def convert_and_upload_image_to_signed_url(upload_object: UploadObject) -> str:
             },
         )
 
-    if response.status_code == 200:
-        final_key = extract_key_from_signed_url(upload_object.signed_url)
-        return final_key
-    else:
+    if response.status_code != 200:
+        # throw an exception if the upload fails
         logging.info(f"^^ Failed to upload image. Status code: {response.status_code}")
         response.raise_for_status()
+
+    final_key = extract_key_from_signed_url(upload_object.signed_url)
+    return final_key
 
 
 def upload_images(
     upload_objects: List[UploadObject],
-    upload_path_prefix: str,
 ) -> List[UploadedImageResult]:
     """Upload all images to S3 in parallel and return the S3 URLs"""
     logging.info(
@@ -110,7 +110,6 @@ def upload_images(
                 executor.submit(
                     convert_and_upload_image_to_signed_url,
                     upload_object,
-                    upload_path_prefix,
                 )
             )
 

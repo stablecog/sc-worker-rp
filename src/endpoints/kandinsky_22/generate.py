@@ -113,7 +113,7 @@ def generate(
                 generator=generator,
             ).images[0]
             output_images.append(out)
-    elif input.init_image_url is not None:
+    elif input.init_image_url is not None and input.prompt_strength is not None:
         input.pipe_object.text2img.scheduler = get_scheduler(
             input.scheduler, input.pipe_object.text2img
         )

@@ -101,7 +101,7 @@ def resize_to_mask(img, mask):
     new_img = Image.new("RGBA", img.size, (0, 0, 0, 0))
 
     # Paste the resized image onto the new image at the appropriate location
-    new_img.paste(resized_img, (min_x, min_y))
+    new_img.paste(resized_img, (int(min_x), int(min_y)))
 
     return new_img
 
@@ -189,10 +189,10 @@ def crop_images(
         if old_width < width or old_height < height:
             cropped_images.append(image)
         else:
-            left = (old_width - width) / 2
-            top = (old_height - height) / 2
-            right = (old_width + width) / 2
-            bottom = (old_height + height) / 2
+            left = int((old_width - width) / 2)
+            top = int((old_height - height) / 2)
+            right = int((old_width + width) / 2)
+            bottom = int((old_height + height) / 2)
 
             cropped_image = image.crop((left, top, right, bottom))
             cropped_images.append(cropped_image)
@@ -225,7 +225,7 @@ def log_gpu_memory(device_id: int = 0, message: str = "Value"):
 T = TypeVar("T")
 
 
-def return_value_if_in_list(value: T, list_of_values: List[T]) -> bool:
+def return_value_if_in_list(value: T, list_of_values: List[T]) -> T:
     if value not in list_of_values:
         raise ValueError(f'"{value}" is not in the list of choices')
     return value
