@@ -20,4 +20,4 @@ RUN python3.11 /app/builder.py && \
   rm /app/builder.py
 
 # Set the CMD to run the model-specific handler script
-CMD ["python3.11", "-u", "src/endpoints/${MODEL_NAME}/handler.py"]
+CMD python3.11 -u src/endpoints/${MODEL_NAME}/handler.py
