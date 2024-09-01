@@ -17,7 +17,7 @@ from src.endpoints.kandinsky_22.generate import generate
 from src.shared.classes import (
     GenerateFunctionInputKandinsky22,
     Kandinsky22PipeObject,
-    PredictGenerateInput,
+    PredictionGenerateInput,
     UploadObject,
 )
 from src.shared.constants import DEVICE_CUDA
@@ -70,10 +70,10 @@ handler = Handler()
 @torch.inference_mode()
 def predict(job):
     job_input = job["input"]
-    validated_input: PredictGenerateInput = None
+    validated_input: PredictionGenerateInput = None
 
     try:
-        validated_input = PredictGenerateInput(job_input)
+        validated_input = PredictionGenerateInput(**job_input)
     except ValidationError as e:
         return {"error": {"code": "validation_failed", "message": e.json()}}
 

@@ -116,7 +116,7 @@ class GenerateFunctionInputFlux1(GenerateFunctionInput):
         self.pipe_object = pipe_object
 
 
-class PredictGenerateInput(BaseModel):
+class PredictionGenerateInput(BaseModel):
     prompt: str = Field(description="Input prompt.", default="")
     negative_prompt: str = Field(description="Input negative prompt.", default="")
     num_outputs: int = Field(
