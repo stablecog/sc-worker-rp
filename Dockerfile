@@ -14,7 +14,7 @@ RUN python3.11 -m pip install --upgrade pip && \
   python3.11 -m pip install --ignore-installed --upgrade -r requirements.txt --no-cache-dir
 
 # Run the model-specific builder script
-RUN python3.11 src/endpoints/${MODEL_NAME}/builder.py
+RUN python3.11 -m src.endpoints.${MODEL_NAME}.builder
 
 # Set the CMD to run the model-specific handler script
-CMD python3.11 src/endpoints/${MODEL_NAME}/handler.py
+CMD python3.11 -m src.endpoints.${MODEL_NAME}.handler
