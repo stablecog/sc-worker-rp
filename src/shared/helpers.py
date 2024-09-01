@@ -4,7 +4,7 @@ from PIL import Image
 from io import BytesIO
 from concurrent.futures import ThreadPoolExecutor
 from PIL import ImageOps
-from typing import List, Optional, TypeVar
+from typing import List, Optional
 from io import BytesIO
 import numpy as np
 import textwrap
@@ -13,8 +13,6 @@ import torch
 from io import BytesIO
 import logging
 from tabulate import tabulate
-
-from src.shared.classes import GenerateInput, PredictionGenerateInput
 
 from .constants import TabulateLevels
 from contextlib import contextmanager
@@ -224,15 +222,6 @@ def log_gpu_memory(device_id: int = 0, message: str = "Value"):
         logging.info(f"Failed to log GPU memory", e)
 
 
-T = TypeVar("T")
-
-
-def return_value_if_in_list(value: T, list_of_values: List[T]) -> T:
-    if value not in list_of_values:
-        raise ValueError(f'"{value}" is not in the list of choices')
-    return value
-
-
 def parse_content_type(extension: str) -> Optional[str]:
     if extension == "jpeg" or extension == "jpg":
         return "image/jpeg"
@@ -242,24 +231,3 @@ def parse_content_type(extension: str) -> Optional[str]:
         return "image/webp"
 
     return None
-
-
-def prediction_input_to_generate_input(
-    input: PredictionGenerateInput,
-) -> GenerateInput:
-    return GenerateInput(
-        prompt=input.prompt,
-        negative_prompt=input.negative_prompt,
-        prompt_prefix=input.prompt_prefix,
-        negative_prompt_prefix=input.negative_prompt_prefix,
-        width=input.width,
-        height=input.height,
-        num_outputs=input.num_outputs,
-        num_inference_steps=input.num_inference_steps,
-        guidance_scale=input.guidance_scale,
-        init_image_url=input.init_image_url,
-        mask_image_url=input.mask_image_url,
-        prompt_strength=input.prompt_strength,
-        scheduler=input.scheduler,
-        seed=input.seed,
-    )

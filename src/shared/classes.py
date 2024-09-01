@@ -10,13 +10,20 @@ from diffusers import (
     FluxPipeline,
     StableDiffusion3Pipeline,
 )
-from typing import Any, Generic, List, TypeVar
+from typing import Any, List, TypeVar
 from pydantic import BaseModel, Field, validator
 
 from src.shared.constants import SIZE_LIST
-from src.shared.helpers import return_value_if_in_list
 from src.shared.sd import SD_SCHEDULER_DEFAULT
 from PIL import Image
+
+T = TypeVar("T")
+
+
+def return_value_if_in_list(value: T, list_of_values: List[T]) -> T:
+    if value not in list_of_values:
+        raise ValueError(f'"{value}" is not in the list of choices')
+    return value
 
 
 class StableDiffusionPipeObject:
@@ -194,3 +201,24 @@ class UploadObject:
         self.signed_url = signed_url
         self.target_extension = target_extension
         self.target_quality = target_quality
+
+
+def prediction_input_to_generate_input(
+    input: PredictionGenerateInput,
+) -> GenerateInput:
+    return GenerateInput(
+        prompt=input.prompt,
+        negative_prompt=input.negative_prompt,
+        prompt_prefix=input.prompt_prefix,
+        negative_prompt_prefix=input.negative_prompt_prefix,
+        width=input.width,
+        height=input.height,
+        num_outputs=input.num_outputs,
+        num_inference_steps=input.num_inference_steps,
+        guidance_scale=input.guidance_scale,
+        init_image_url=input.init_image_url,
+        mask_image_url=input.mask_image_url,
+        prompt_strength=input.prompt_strength,
+        scheduler=input.scheduler,
+        seed=input.seed,
+    )

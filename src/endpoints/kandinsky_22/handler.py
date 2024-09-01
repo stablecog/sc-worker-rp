@@ -15,9 +15,9 @@ from src.shared.classes import (
     Kandinsky22PipeObject,
     PredictionGenerateInput,
     UploadObject,
+    prediction_input_to_generate_input,
 )
 from src.shared.constants import DEVICE_CUDA
-from src.shared.helpers import prediction_input_to_generate_input
 from src.shared.upload import upload_images
 
 torch.cuda.empty_cache()
