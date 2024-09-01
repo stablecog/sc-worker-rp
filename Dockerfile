@@ -1,4 +1,4 @@
-FROM runpod/base:0.4.2-cuda11.8.0
+FROM runpod/base:0.6.2-cuda12.1.0
 
 # Define a build argument for the model name when building the image with the --build-arg flag
 # The model name should match the name of the folder in src/endpoints
