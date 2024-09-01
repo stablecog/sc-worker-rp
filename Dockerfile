@@ -3,6 +3,9 @@ FROM runpod/base:0.6.2-cuda12.1.0
 # Define a build argument for the model name
 ARG MODEL_NAME
 
+# Create an environment variable from the build argument
+ENV MODEL_NAME=${MODEL_NAME}
+
 # Set working directory
 WORKDIR /
 
