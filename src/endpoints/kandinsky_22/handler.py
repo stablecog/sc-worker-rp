@@ -78,9 +78,25 @@ def predict(job):
         return {"error": {"code": "validation_failed", "message": e.json()}}
 
     generate_input = GenerateFunctionInputKandinsky22(
-        **validated_input.dict(), pipe_object=handler.pipe_object
+        prompt=validated_input.prompt,
+        negative_prompt=validated_input.negative_prompt,
+        prompt_prefix=validated_input.prompt_prefix,
+        negative_prompt_prefix=validated_input.negative_prompt_prefix,
+        width=validated_input.width,
+        height=validated_input.height,
+        num_outputs=validated_input.num_outputs,
+        num_inference_steps=validated_input.num_inference_steps,
+        guidance_scale=validated_input.guidance_scale,
+        init_image_url=validated_input.init_image_url,
+        mask_image_url=validated_input.mask_image_url,
+        prompt_strength=validated_input.prompt_strength,
+        scheduler=validated_input.scheduler,
+        seed=validated_input.seed,
+        pipe_object=handler.pipe_object,
     )
-    outputs = generate(generate_input)
+
+    outputs = generate(input=generate_input)
+
     upload_objects: List[UploadObject] = {}
     for i, output in enumerate(outputs):
         upload_objects.append(

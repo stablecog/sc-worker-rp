@@ -10,7 +10,7 @@ from diffusers import (
     FluxPipeline,
     StableDiffusion3Pipeline,
 )
-from typing import Any, List
+from typing import Any, Generic, List, TypeVar
 from pydantic import BaseModel, Field, validator
 
 from src.shared.constants import SIZE_LIST
@@ -59,7 +59,10 @@ class Flux1PipeObject:
         self.text2img = text2img
 
 
-class GenerateFunctionInput:
+T = TypeVar("T")
+
+
+class GenerateFunctionInput(Generic[T]):
     def __init__(
         self,
         prompt: str,
@@ -76,6 +79,7 @@ class GenerateFunctionInput:
         prompt_strength: float | None,
         scheduler: Any,
         seed: int,
+        pipe_object: T,
     ):
         self.prompt = prompt
         self.negative_prompt = negative_prompt
@@ -91,6 +95,7 @@ class GenerateFunctionInput:
         self.prompt_strength = prompt_strength
         self.scheduler = scheduler
         self.seed = seed
+        self.pipe_object = pipe_object
 
 
 class GenerateFunctionOutput:
@@ -98,25 +103,21 @@ class GenerateFunctionOutput:
         self.image = image
 
 
-class GenerateFunctionInputKandinsky22(GenerateFunctionInput):
-    def __init__(self, *args, pipe_object: Kandinsky22PipeObject, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.pipe_object = pipe_object
+class GenerateFunctionInputKandinsky22(GenerateFunctionInput[Kandinsky22PipeObject]):
+    pass
 
 
-class GenerateFunctionInputStableDiffusion(GenerateFunctionInput):
-    def __init__(self, *args, pipe_object: StableDiffusionPipeObject, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.pipe_object = pipe_object
+class GenerateFunctionInputStableDiffusion(
+    GenerateFunctionInput[StableDiffusionPipeObject]
+):
+    pass
 
 
-class GenerateFunctionInputFlux1(GenerateFunctionInput):
-    def __init__(self, *args, pipe_object: Flux1PipeObject, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.pipe_object = pipe_object
+class GenerateFunctionInputFlux1(GenerateFunctionInput[Flux1PipeObject]):
+    pass
 
 
-class PredictionGenerateInput(BaseModel):
+class PredictGenerateInput(BaseModel):
     prompt: str = Field(description="Input prompt.", default="")
     negative_prompt: str = Field(description="Input negative prompt.", default="")
     num_outputs: int = Field(
