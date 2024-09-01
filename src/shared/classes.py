@@ -44,7 +44,7 @@ class Kandinsky22PipeObject:
         self,
         prior: KandinskyV22PriorPipeline,
         text2img: KandinskyV22Pipeline,
-        inpaint: KandinskyV22InpaintPipeline,
+        inpaint: KandinskyV22InpaintPipeline | None,
     ):
         self.prior = prior
         self.text2img = text2img

@@ -70,7 +70,7 @@ handler = Handler()
 @torch.inference_mode()
 def predict(job):
     job_input = job["input"]
-    validated_input: PredictionGenerateInput = None
+    validated_input: PredictionGenerateInput | None = None
 
     try:
         validated_input = PredictionGenerateInput(**job_input)
@@ -97,7 +97,7 @@ def predict(job):
 
     outputs = generate(input=generate_input)
 
-    upload_objects: List[UploadObject] = {}
+    upload_objects: List[UploadObject] = []
     for i, output in enumerate(outputs):
         upload_objects.append(
             UploadObject(
@@ -109,7 +109,6 @@ def predict(job):
         )
     upload_results = upload_images(
         upload_objects=upload_objects,
-        upload_path_prefix=validated_input["upload_prefix"],
     )
 
     response = {"output": {"images": []}}
