@@ -7,7 +7,7 @@ from src.shared.classes import GenerateFunctionInputKandinsky22, GenerateFunctio
 from src.shared.constants import DEVICE_CUDA
 
 from .helpers import get_scheduler
-from shared.helpers import (
+from src.shared.helpers import (
     crop_images,
     download_and_fit_image,
     download_and_fit_image_mask,
