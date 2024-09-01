@@ -1,0 +1,18 @@
+# Base image
+FROM stablecog/cuda-torch:12.1.0-2.1.0-cudnn8-devel-ubuntu22.04
+
+
+# Install Python dependencies (Worker Template)
+RUN python -m pip install --upgrade pip && \
+  python -m pip install --upgrade -r /requirements.txt --no-cache-dir && \
+  rm /requirements.txt
+
+# Cache Models
+COPY /src/endpoints/kandinsky_22/builder /builder.py
+RUN python /builder.py && \
+  rm /builder.py
+
+# Add src files (Worker Template)
+ADD src .
+
+CMD python -u /src/endpoints/kandinsky_22/handler.py
