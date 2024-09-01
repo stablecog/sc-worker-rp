@@ -1,16 +1,14 @@
 # Base image
 FROM stablecog/cuda-torch:12.1.0-2.1.0-cudnn8-devel-ubuntu22.04
 
-
 RUN python -m pip install --upgrade pip && \
   python -m pip install --upgrade -r /requirements.txt --no-cache-dir && \
   rm /requirements.txt
 
 ADD src .
 
-COPY /src/endpoints/kandinsky_22/builder /builder.py
+COPY /src/endpoints/kandinsky_22/builder.py /builder.py
 RUN python /builder.py && \
   rm /builder.py
-
 
 CMD python -u /src/endpoints/kandinsky_22/handler.py
