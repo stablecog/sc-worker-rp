@@ -62,7 +62,7 @@ class Flux1PipeObject:
 T = TypeVar("T")
 
 
-class GenerateFunctionInput(Generic[T]):
+class GenerateInput:
     def __init__(
         self,
         prompt: str,
@@ -79,7 +79,6 @@ class GenerateFunctionInput(Generic[T]):
         prompt_strength: float | None,
         scheduler: Any,
         seed: int,
-        pipe_object: T,
     ):
         self.prompt = prompt
         self.negative_prompt = negative_prompt
@@ -95,26 +94,11 @@ class GenerateFunctionInput(Generic[T]):
         self.prompt_strength = prompt_strength
         self.scheduler = scheduler
         self.seed = seed
-        self.pipe_object = pipe_object
 
 
-class GenerateFunctionOutput:
+class GenerateOutput:
     def __init__(self, image: Image.Image):
         self.image = image
-
-
-class GenerateFunctionInputKandinsky22(GenerateFunctionInput[Kandinsky22PipeObject]):
-    pass
-
-
-class GenerateFunctionInputStableDiffusion(
-    GenerateFunctionInput[StableDiffusionPipeObject]
-):
-    pass
-
-
-class GenerateFunctionInputFlux1(GenerateFunctionInput[Flux1PipeObject]):
-    pass
 
 
 class PredictionGenerateInput(BaseModel):

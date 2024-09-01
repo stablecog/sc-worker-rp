@@ -17,14 +17,11 @@ class UploadedImageResult:
         self.image_url = image_url
 
 
-def extract_key_from_signed_url(signed_url: str) -> str:
+def extract_s3_url_from_signed_url(signed_url: str) -> str:
     """Helper function to extract the key from the signed URL."""
     parsed_url = urlparse(signed_url)
-    # Extract the bucket name and object key from the URL
-    bucket_name = parsed_url.netloc.split(".")[0]
-    object_key = parsed_url.path.lstrip("/")
-    final_key = f"s3://{bucket_name}/{object_key}"
-    return final_key
+    path = parsed_url.path.lstrip("/")
+    return f"s3://{path}"
 
 
 def convert_and_upload_image_to_signed_url(upload_object: UploadObject) -> str:
@@ -84,8 +81,8 @@ def convert_and_upload_image_to_signed_url(upload_object: UploadObject) -> str:
         logging.info(f"^^ Failed to upload image. Status code: {response.status_code}")
         response.raise_for_status()
 
-    final_key = extract_key_from_signed_url(upload_object.signed_url)
-    return final_key
+    s3_url = extract_s3_url_from_signed_url(upload_object.signed_url)
+    return s3_url
 
 
 def upload_images(

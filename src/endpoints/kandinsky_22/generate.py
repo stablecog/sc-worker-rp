@@ -3,7 +3,11 @@ import time
 from typing import List
 
 from src.endpoints.kandinsky_22.constants import KANDINSKY_22_MODEL_NAME
-from src.shared.classes import GenerateFunctionInputKandinsky22, GenerateFunctionOutput
+from src.shared.classes import (
+    GenerateInput,
+    GenerateOutput,
+    Kandinsky22PipeObject,
+)
 from src.shared.constants import DEVICE_CUDA
 
 from .helpers import get_scheduler
@@ -26,13 +30,13 @@ kandinsky_2_2_negative_prompt_prefix = "overexposed"
 
 
 def generate(
-    input: GenerateFunctionInputKandinsky22,
-) -> List[GenerateFunctionOutput]:
+    input: GenerateInput,
+    pipe_object: Kandinsky22PipeObject,
+) -> List[GenerateOutput]:
     inference_start = time.time()
     prompt = input.prompt
     negative_prompt = input.negative_prompt
     seed = input.seed
-    pipe_object = input.pipe_object
 
     if seed is None:
         seed = int.from_bytes(os.urandom(3), "big")
@@ -114,8 +118,8 @@ def generate(
             ).images[0]
             output_images.append(out)
     elif input.init_image_url is not None and input.prompt_strength is not None:
-        input.pipe_object.text2img.scheduler = get_scheduler(
-            input.scheduler, input.pipe_object.text2img
+        pipe_object.text2img.scheduler = get_scheduler(
+            input.scheduler, pipe_object.text2img
         )
         start = time.time()
         init_image = download_and_fit_image(
@@ -130,7 +134,7 @@ def generate(
         weights = [input.prompt_strength, 1 - input.prompt_strength]
         for i in range(input.num_outputs):
             generator = torch.Generator(device=DEVICE_CUDA).manual_seed(seed + i)
-            prior_out = input.pipe_object.prior.interpolate(
+            prior_out = pipe_object.prior.interpolate(
                 images_and_texts,
                 weights,
                 negative_prompt=negative_prompt,
@@ -139,7 +143,7 @@ def generate(
                 num_images_per_prompt=1,
                 generator=generator,
             )
-            out = input.pipe_object.text2img(
+            out = pipe_object.text2img(
                 **prior_out,
                 width=input.width,
                 height=input.height,
@@ -149,26 +153,26 @@ def generate(
             ).images[0]
             output_images.append(out)
     else:
-        input.pipe_object.text2img.scheduler = get_scheduler(
-            input.scheduler, input.pipe_object.text2img
+        pipe_object.text2img.scheduler = get_scheduler(
+            input.scheduler, pipe_object.text2img
         )
         for i in range(input.num_outputs):
             generator = torch.Generator(device=DEVICE_CUDA).manual_seed(seed + i)
-            img_emb = input.pipe_object.prior(
+            img_emb = pipe_object.prior(
                 prompt=prompt,
                 num_inference_steps=PRIOR_STEPS,
                 guidance_scale=PRIOR_GUIDANCE_SCALE,
                 num_images_per_prompt=1,
                 generator=generator,
             )
-            neg_emb = input.pipe_object.prior(
+            neg_emb = pipe_object.prior(
                 prompt=negative_prompt,
                 num_inference_steps=PRIOR_STEPS,
                 guidance_scale=PRIOR_GUIDANCE_SCALE,
                 num_images_per_prompt=1,
                 generator=generator,
             )
-            out = input.pipe_object.text2img(
+            out = pipe_object.text2img(
                 num_inference_steps=input.num_inference_steps,
                 guidance_scale=input.guidance_scale,
                 width=input.width,
@@ -188,9 +192,9 @@ def generate(
         f"🔮 🟢 Inference | {KANDINSKY_22_MODEL_NAME} | {input.num_outputs} image(s) | {round((inference_end - inference_start) * 1000)}ms"
     )
 
-    outputs: List[GenerateFunctionOutput] = []
+    outputs: List[GenerateOutput] = []
 
     for image in output_images:
-        outputs.append(GenerateFunctionOutput(image=image))
+        outputs.append(GenerateOutput(image=image))
 
     return outputs

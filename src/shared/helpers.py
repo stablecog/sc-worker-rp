@@ -14,6 +14,8 @@ from io import BytesIO
 import logging
 from tabulate import tabulate
 
+from src.shared.classes import GenerateInput, PredictionGenerateInput
+
 from .constants import TabulateLevels
 from contextlib import contextmanager
 from PIL import Image
@@ -240,3 +242,24 @@ def parse_content_type(extension: str) -> Optional[str]:
         return "image/webp"
 
     return None
+
+
+def prediction_input_to_generate_input(
+    input: PredictionGenerateInput,
+) -> GenerateInput:
+    return GenerateInput(
+        prompt=input.prompt,
+        negative_prompt=input.negative_prompt,
+        prompt_prefix=input.prompt_prefix,
+        negative_prompt_prefix=input.negative_prompt_prefix,
+        width=input.width,
+        height=input.height,
+        num_outputs=input.num_outputs,
+        num_inference_steps=input.num_inference_steps,
+        guidance_scale=input.guidance_scale,
+        init_image_url=input.init_image_url,
+        mask_image_url=input.mask_image_url,
+        prompt_strength=input.prompt_strength,
+        scheduler=input.scheduler,
+        seed=input.seed,
+    )

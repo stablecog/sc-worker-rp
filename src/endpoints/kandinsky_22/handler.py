@@ -1,13 +1,10 @@
-import concurrent.futures
-from typing import List
-
 import torch
+from typing import List
 from diffusers import (
     KandinskyV22Pipeline,
     KandinskyV22PriorPipeline,
 )
 from pydantic import ValidationError
-
 import runpod
 from src.endpoints.kandinsky_22.constants import (
     KANDINSKY_22_DECODER_MODEL_ID,
@@ -15,56 +12,33 @@ from src.endpoints.kandinsky_22.constants import (
 )
 from src.endpoints.kandinsky_22.generate import generate
 from src.shared.classes import (
-    GenerateFunctionInputKandinsky22,
     Kandinsky22PipeObject,
     PredictionGenerateInput,
     UploadObject,
 )
 from src.shared.constants import DEVICE_CUDA
+from src.shared.helpers import prediction_input_to_generate_input
 from src.shared.upload import upload_images
 
 torch.cuda.empty_cache()
 
 
-class Handler:
+class Model:
     def __init__(self):
-        self.pipe_object: Kandinsky22PipeObject
-        self.load_pipes()
-
-    def load_prior(self):
-        prior = KandinskyV22PriorPipeline.from_pretrained(
-            KANDINSKY_22_PRIOR_MODEL_ID,
-            torch_dtype=torch.float16,
-        ).to(DEVICE_CUDA)
-        return prior
-
-    def load_text2img(self):
-        text2img = KandinskyV22Pipeline.from_pretrained(
-            KANDINSKY_22_DECODER_MODEL_ID,
-            torch_dtype=torch.float16,
-        ).to(DEVICE_CUDA)
-        return text2img
-
-    def load_inpaint(self):
-        return None
-
-    def load_pipes(self):
-        self.pipe_object = Kandinsky22PipeObject(
-            prior=None,
-            text2img=None,
+        self.pipe_object: Kandinsky22PipeObject = Kandinsky22PipeObject(
+            prior=KandinskyV22PriorPipeline.from_pretrained(
+                KANDINSKY_22_PRIOR_MODEL_ID,
+                torch_dtype=torch.float16,
+            ).to(DEVICE_CUDA),
+            text2img=KandinskyV22Pipeline.from_pretrained(
+                KANDINSKY_22_DECODER_MODEL_ID,
+                torch_dtype=torch.float16,
+            ).to(DEVICE_CUDA),
             inpaint=None,
         )
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            future_prior = executor.submit(self.load_prior)
-            future_text2img = executor.submit(self.load_text2img)
-            future_inpaint = executor.submit(self.load_inpaint)
-
-            self.pipe_object.prior = future_prior.result()
-            self.pipe_object.text2img = future_text2img.result()
-            self.pipe_object.inpaint = future_inpaint.result()
 
 
-handler = Handler()
+MODEL = Model()
 
 
 @torch.inference_mode()
@@ -77,25 +51,11 @@ def predict(job):
     except ValidationError as e:
         return {"error": {"code": "validation_failed", "message": e.json()}}
 
-    generate_input = GenerateFunctionInputKandinsky22(
-        prompt=validated_input.prompt,
-        negative_prompt=validated_input.negative_prompt,
-        prompt_prefix=validated_input.prompt_prefix,
-        negative_prompt_prefix=validated_input.negative_prompt_prefix,
-        width=validated_input.width,
-        height=validated_input.height,
-        num_outputs=validated_input.num_outputs,
-        num_inference_steps=validated_input.num_inference_steps,
-        guidance_scale=validated_input.guidance_scale,
-        init_image_url=validated_input.init_image_url,
-        mask_image_url=validated_input.mask_image_url,
-        prompt_strength=validated_input.prompt_strength,
-        scheduler=validated_input.scheduler,
-        seed=validated_input.seed,
-        pipe_object=handler.pipe_object,
+    generate_input = prediction_input_to_generate_input(validated_input)
+    outputs = generate(
+        input=generate_input,
+        pipe_object=MODEL.pipe_object,
     )
-
-    outputs = generate(input=generate_input)
 
     upload_objects: List[UploadObject] = []
     for i, output in enumerate(outputs):
@@ -111,7 +71,7 @@ def predict(job):
         upload_objects=upload_objects,
     )
 
-    response = {"output": {"images": []}}
+    response = {"output": {"images": []}, "input": job_input}
     for upload_result in upload_results:
         response["output"]["images"].append(upload_result.image_url)
 
