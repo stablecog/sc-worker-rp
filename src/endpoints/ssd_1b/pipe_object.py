@@ -2,7 +2,6 @@ import torch
 from .constants import MODEL_ID, REFINER_ID
 from src.shared.classes import StableDiffusionPipeObject
 from diffusers import StableDiffusionXLPipeline, StableDiffusionXLImg2ImgPipeline
-
 from src.shared.constants import DEVICE_CUDA
 from typing import cast
 

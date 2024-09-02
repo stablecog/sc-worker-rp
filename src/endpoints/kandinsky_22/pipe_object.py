@@ -5,7 +5,6 @@ from diffusers import (
     KandinskyV22Pipeline,
     KandinskyV22PriorPipeline,
 )
-
 from src.shared.constants import DEVICE_CUDA
 from typing import cast
 
