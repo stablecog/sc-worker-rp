@@ -180,21 +180,23 @@ class PredictionGenerateInput(BaseModel):
 
     @validator("height")
     def validate_height(cls, v: int, values):
-        return return_value_if_in_list(
-            v,
-            SIZE_LIST,
-        )
+        if v not in SIZE_LIST:
+            raise ValueError(f'Invalid height: "{v}". Must be one of {SIZE_LIST}.')
+        return v
 
     @validator("width")
     def validate_width(cls, v: int, values):
-        return return_value_if_in_list(
-            v,
-            SIZE_LIST,
-        )
+        if v not in SIZE_LIST:
+            raise ValueError(f'Invalid width: "{v}". Must be one of {SIZE_LIST}.')
+        return v
 
     @validator("output_image_extension")
     def validate_output_image_extension(cls, v):
-        return return_value_if_in_list(v, ["png", "jpeg", "webp"])
+        if v not in ["png", "jpeg", "webp"]:
+            raise ValueError(
+                f'Invalid output_image_extension: "{v}". Must be one of ["png", "jpeg", "webp"].'
+            )
+        return v
 
     @validator("prompt_strength", pre=True, always=True)
     def validate_prompt_strength(cls, v, values):
