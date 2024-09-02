@@ -18,6 +18,7 @@ def get_pipe_object(to_cuda: bool = True) -> Kandinsky22PipeObject:
         prior = prior.to(DEVICE_CUDA)
     else:
         del prior
+        prior = None
 
     text2img = KandinskyV22Pipeline.from_pretrained(
         MODEL_ID,
@@ -27,6 +28,7 @@ def get_pipe_object(to_cuda: bool = True) -> Kandinsky22PipeObject:
         text2img = text2img.to(DEVICE_CUDA)
     else:
         del text2img
+        text2img = None
 
     inpaint = None
 
