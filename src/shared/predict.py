@@ -36,7 +36,8 @@ def create_predict_func(
         try:
             validated_input = PredictionGenerateInput(**job_input)
         except ValidationError as e:
-            return {"error": {"code": "validation_failed", "message": e.json()}}
+            print(f"Validation error: {e}")
+            return {"error": {"code": "validation_failed", "message": e.errors()}}
 
         generate_input = predict_input_to_generate_input(validated_input)
         outputs = generate(

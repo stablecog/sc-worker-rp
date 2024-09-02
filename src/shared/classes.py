@@ -10,7 +10,7 @@ from diffusers import (
     FluxPipeline,
     StableDiffusion3Pipeline,
 )
-from typing import Any, Generic, List, TypeVar
+from typing import Any, Generic, List, Optional, TypeVar
 from pydantic import BaseModel, Field, validator
 
 from .constants import SIZE_LIST
@@ -117,15 +117,15 @@ class PredictionGenerateInput(BaseModel):
         le=4,
         default=1,
     )
-    init_image_url: str = Field(
+    init_image_url: Optional[str] = Field(
         description="Init image url to be used with img2img.",
         default=None,
     )
-    mask_image_url: str = Field(
+    mask_image_url: Optional[str] = Field(
         description="Mask image url to be used with img2img.",
         default=None,
     )
-    prompt_strength: float = Field(
+    prompt_strength: Optional[float] = Field(
         description="The strength of the prompt when using img2img, between 0-1. When 1, it'll essentially ignore the image.",
         ge=0,
         le=1,
@@ -154,9 +154,6 @@ class PredictionGenerateInput(BaseModel):
     )
     output_image_quality: int = Field(
         description="Output quality of the image. Can be 1-100.", default=90
-    )
-    image_to_upscale: str = Field(
-        description="Input image for the upscaler (AuraSR).", default=None
     )
     width: int = Field(
         description="Width of output image.",
@@ -187,6 +184,22 @@ class PredictionGenerateInput(BaseModel):
     @validator("output_image_extension")
     def validate_output_image_extension(cls, v):
         return return_value_if_in_list(v, ["png", "jpeg", "webp"])
+
+    @validator("prompt_strength", pre=True, always=True)
+    def validate_prompt_strength(cls, v, values):
+        if values.get("init_image_url") is not None and v is None:
+            raise ValueError(
+                "prompt_strength must be provided when init_image_url is set."
+            )
+        return v
+
+    @validator("mask_image_url", pre=True, always=True)
+    def validate_mask_image_url(cls, v, values):
+        if v is not None and values.get("init_image_url") is None:
+            raise ValueError(
+                "init_image_url must be provided when mask_image_url is set."
+            )
+        return v
 
 
 class UploadObject:

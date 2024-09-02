@@ -16,11 +16,11 @@ from diffusers import (
 )
 
 SD_SCHEDULERS = {
+    "K_EULER_ANCESTRAL": {"from_config": EulerAncestralDiscreteScheduler.from_config},
     "K_LMS": {"from_config": LMSDiscreteScheduler.from_config},
     "PNDM": {"from_config": PNDMScheduler.from_config},
     "DDIM": {"from_config": DDIMScheduler.from_config},
     "K_EULER": {"from_config": EulerDiscreteScheduler.from_config},
-    "K_EULER_ANCESTRAL": {"from_config": EulerAncestralDiscreteScheduler.from_config},
     "HEUN": {"from_config": HeunDiscreteScheduler.from_config},
     "DPM++_2M": {"from_config": DPMSolverMultistepScheduler.from_config},
     "DPM++_2S": {"from_config": DPMSolverSinglestepScheduler.from_config},
