@@ -2,6 +2,8 @@ import json
 from typing import Callable, List, TypeVar
 from pydantic import ValidationError
 import torch
+
+from src.shared.constants import WORKER_VERSION
 from .upload import upload_images
 from .classes import (
     GenerateFunctionProps,
@@ -46,6 +48,9 @@ def create_predict_func(
                     "message": e.json(),
                 },
                 "input": job_input,
+                "metadata": {
+                    "worker_version": WORKER_VERSION,
+                },
             }
 
         generate_input = predict_input_to_generate_input(validated_input)
@@ -74,7 +79,15 @@ def create_predict_func(
             upload_objects=upload_objects,
         )
 
-        response = {"output": {"images": []}, "input": job_input}
+        response = {
+            "output": {
+                "images": [],
+            },
+            "input": job_input,
+            "metadata": {
+                "worker_version": WORKER_VERSION,
+            },
+        }
         for upload_result in upload_results:
             response["output"]["images"].append(upload_result.image_url)
         return response
