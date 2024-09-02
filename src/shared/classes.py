@@ -176,8 +176,6 @@ class PredictionGenerateInput(BaseModel):
         description="Optional metadata to be returned with the response.", default=None
     )
 
-    schedulers: List[str]
-
     @validator("height")
     def validate_height(cls, v: int, values):
         if v not in SIZE_LIST:
