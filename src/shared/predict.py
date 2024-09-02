@@ -30,7 +30,6 @@ def create_predict_func(
 
     MODEL = Model()
 
-    @torch.inference_mode()
     def predict(job):
         job_input = job["input"]
         validated_input: PredictionGenerateInput | None = None
