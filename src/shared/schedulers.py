@@ -40,3 +40,5 @@ KANDINSKY_22_SCHEDULERS = {
     "DDIM": {"scheduler": DDIMScheduler},
     "DPM++_2M": {"scheduler": DPMSolverMultistepScheduler},
 }
+
+KANDINSKY_22_SCHEDULER_CHOICES = [*KANDINSKY_22_SCHEDULERS.keys()]

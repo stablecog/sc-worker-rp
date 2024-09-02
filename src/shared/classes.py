@@ -170,6 +170,8 @@ class PredictionGenerateInput(BaseModel):
         description="Optional metadata to be returned with the response.", default=None
     )
 
+    schedulers: List[str]
+
     @validator("height")
     def validate_height(cls, v: int, values):
         return return_value_if_in_list(
@@ -209,6 +211,14 @@ class PredictionGenerateInput(BaseModel):
         if not isinstance(v, list) or len(v) < values.get("num_outputs", 1):
             raise ValueError(
                 "signed_urls must be a list with at least as many elements as num_outputs."
+            )
+        return v
+
+    @validator("scheduler")
+    def validate_scheduler(cls, v, values):
+        if v not in values.get("schedulers", []):
+            raise ValueError(
+                f"Invalid scheduler: {v}. Must be one of {values['schedulers']}."
             )
         return v
 

@@ -19,6 +19,7 @@ def create_predict_func(
     model_name: str,
     get_pipe_object: Callable[[bool], T],
     generate: Callable[[GenerateFunctionProps[T]], List[GenerateOutput]],
+    schedulers: List[str],
     default_prompt_prefix: str | None = None,
     default_negative_prompt_prefix: str | None = None,
     dont_set_scheduler: bool = False,
@@ -35,7 +36,9 @@ def create_predict_func(
         validated_input: PredictionGenerateInput | None = None
 
         try:
-            validated_input = PredictionGenerateInput(**job_input)
+            validated_input = PredictionGenerateInput(
+                **job_input, schedulers=schedulers
+            )
         except ValidationError as e:
             print(f"Validation error: {e}")
             return {
