@@ -45,5 +45,5 @@ def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject:
     )
 
 
-if __name__ == "__main__":
-    get_pipe_object(to_cuda=False)
+""" if __name__ == "__main__":
+    get_pipe_object(to_cuda=False) """
