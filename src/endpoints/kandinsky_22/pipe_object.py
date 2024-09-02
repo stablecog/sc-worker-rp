@@ -20,9 +20,11 @@ def get_pipe_object(to_cuda: bool = True) -> Kandinsky22PipeObject:
         torch_dtype=torch.float16,
     )
     inpaint = None
+
     if to_cuda:
         prior = prior.to(DEVICE_CUDA)
         text2img = text2img.to(DEVICE_CUDA)
+
     return Kandinsky22PipeObject(
         prior=cast(KandinskyV22PriorPipeline, prior),
         text2img=cast(KandinskyV22Pipeline, text2img),
