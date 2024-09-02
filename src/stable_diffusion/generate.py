@@ -1,5 +1,5 @@
 import os
-from typing import List, cast
+from typing import Any, List, cast
 import torch
 
 from src.shared.classes import GenerateInput, GenerateOutput, StableDiffusionPipeObject
@@ -128,14 +128,17 @@ def generate(
 
     for i in range(input.num_outputs):
         generator = torch.Generator(device=DEVICE_CUDA).manual_seed(seed + i)
-        out = pipe_selected(
-            prompt=prompt,
-            negative_prompt=negative_prompt,
-            guidance_scale=input.guidance_scale,
-            generator=generator,
-            num_images_per_prompt=1,
-            num_inference_steps=input.num_inference_steps,
-            **extra_kwargs,
+        out = cast(
+            Any,
+            pipe_selected(
+                prompt=prompt,
+                negative_prompt=negative_prompt,
+                guidance_scale=input.guidance_scale,
+                generator=generator,
+                num_images_per_prompt=1,
+                num_inference_steps=input.num_inference_steps,
+                **extra_kwargs,
+            ),
         ).images[0]
         output_images.append(out)
 
@@ -153,11 +156,14 @@ def generate(
         for i in range(len(output_images)):
             generator = torch.Generator(device=DEVICE_CUDA).manual_seed(seed + i)
             image = output_images[i]
-            out_image = pipe_object.refiner(
-                **args,
-                image=image,
-                generator=generator,
-                num_images_per_prompt=1,
+            out_image = cast(
+                Any,
+                pipe_object.refiner(
+                    **args,
+                    image=image,
+                    generator=generator,
+                    num_images_per_prompt=1,
+                ),
             ).images[0]
             output_images[i] = out_image
         e = time.time()

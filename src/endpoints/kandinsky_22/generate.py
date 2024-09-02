@@ -1,6 +1,6 @@
 import os
 import time
-from typing import List
+from typing import Any, List, cast
 
 from src.endpoints.kandinsky_22.constants import MODEL_NAME
 from src.shared.classes import (
@@ -91,30 +91,39 @@ def generate(
         )
         for i in range(input.num_outputs):
             generator = torch.Generator(device=DEVICE_CUDA).manual_seed(seed + i)
-            img_emb = pipe_object.prior(
-                prompt=prompt,
-                num_inference_steps=PRIOR_STEPS,
-                guidance_scale=PRIOR_GUIDANCE_SCALE,
-                num_images_per_prompt=1,
-                generator=generator,
+            img_emb = cast(
+                Any,
+                pipe_object.prior(
+                    prompt=prompt,
+                    num_inference_steps=PRIOR_STEPS,
+                    guidance_scale=PRIOR_GUIDANCE_SCALE,
+                    num_images_per_prompt=1,
+                    generator=generator,
+                ),
             )
-            neg_emb = pipe_object.prior(
-                prompt=negative_prompt,
-                num_inference_steps=PRIOR_STEPS,
-                guidance_scale=PRIOR_GUIDANCE_SCALE,
-                num_images_per_prompt=1,
-                generator=generator,
+            neg_emb = cast(
+                Any,
+                pipe_object.prior(
+                    prompt=negative_prompt,
+                    num_inference_steps=PRIOR_STEPS,
+                    guidance_scale=PRIOR_GUIDANCE_SCALE,
+                    num_images_per_prompt=1,
+                    generator=generator,
+                ),
             )
-            out = pipe_object.inpaint(
-                image=[init_image] * 1,
-                mask_image=[mask_image] * 1,
-                image_embeds=img_emb.image_embeds,
-                negative_image_embeds=neg_emb.image_embeds,
-                width=init_image.width,
-                height=init_image.height,
-                num_inference_steps=input.num_inference_steps,
-                guidance_scale=input.guidance_scale,
-                generator=generator,
+            out = cast(
+                Any,
+                pipe_object.inpaint(
+                    image=cast(Any, [init_image] * 1),
+                    mask_image=cast(Any, [mask_image] * 1),
+                    image_embeds=img_emb.image_embeds,
+                    negative_image_embeds=neg_emb.image_embeds,
+                    width=init_image.width,
+                    height=init_image.height,
+                    num_inference_steps=input.num_inference_steps,
+                    guidance_scale=input.guidance_scale,
+                    generator=generator,
+                ),
             ).images[0]
             output_images.append(out)
     elif input.init_image_url is not None and input.prompt_strength is not None:
@@ -143,13 +152,16 @@ def generate(
                 num_images_per_prompt=1,
                 generator=generator,
             )
-            out = pipe_object.text2img(
-                **prior_out,
-                width=input.width,
-                height=input.height,
-                num_inference_steps=input.num_inference_steps,
-                guidance_scale=input.guidance_scale,
-                generator=generator,
+            out = cast(
+                Any,
+                pipe_object.text2img(
+                    **prior_out,
+                    width=input.width,
+                    height=input.height,
+                    num_inference_steps=input.num_inference_steps,
+                    guidance_scale=input.guidance_scale,
+                    generator=generator,
+                ),
             ).images[0]
             output_images.append(out)
     else:
@@ -158,28 +170,37 @@ def generate(
         )
         for i in range(input.num_outputs):
             generator = torch.Generator(device=DEVICE_CUDA).manual_seed(seed + i)
-            img_emb = pipe_object.prior(
-                prompt=prompt,
-                num_inference_steps=PRIOR_STEPS,
-                guidance_scale=PRIOR_GUIDANCE_SCALE,
-                num_images_per_prompt=1,
-                generator=generator,
+            img_emb = cast(
+                Any,
+                pipe_object.prior(
+                    prompt=prompt,
+                    num_inference_steps=PRIOR_STEPS,
+                    guidance_scale=PRIOR_GUIDANCE_SCALE,
+                    num_images_per_prompt=1,
+                    generator=generator,
+                ),
             )
-            neg_emb = pipe_object.prior(
-                prompt=negative_prompt,
-                num_inference_steps=PRIOR_STEPS,
-                guidance_scale=PRIOR_GUIDANCE_SCALE,
-                num_images_per_prompt=1,
-                generator=generator,
+            neg_emb = cast(
+                Any,
+                pipe_object.prior(
+                    prompt=negative_prompt,
+                    num_inference_steps=PRIOR_STEPS,
+                    guidance_scale=PRIOR_GUIDANCE_SCALE,
+                    num_images_per_prompt=1,
+                    generator=generator,
+                ),
             )
-            out = pipe_object.text2img(
-                num_inference_steps=input.num_inference_steps,
-                guidance_scale=input.guidance_scale,
-                width=input.width,
-                height=input.height,
-                generator=generator,
-                image_embeds=img_emb.image_embeds,
-                negative_image_embeds=neg_emb.image_embeds,
+            out = cast(
+                Any,
+                pipe_object.text2img(
+                    num_inference_steps=input.num_inference_steps,
+                    guidance_scale=input.guidance_scale,
+                    width=input.width,
+                    height=input.height,
+                    generator=generator,
+                    image_embeds=img_emb.image_embeds,
+                    negative_image_embeds=neg_emb.image_embeds,
+                ),
             ).images[0]
             output_images.append(out)
 
