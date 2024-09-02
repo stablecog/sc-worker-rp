@@ -14,23 +14,33 @@ def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject:
         add_watermark=False,
         safety_checker=None,
     )
+    if to_cuda:
+        text2img = text2img.to(DEVICE_CUDA)
+    else:
+        del text2img
+
     img2img = StableDiffusionXLImg2ImgPipeline.from_pretrained(
         MODEL_ID,
         torch_dtype=torch.float16,
         add_watermark=False,
         safety_checker=None,
     )
+    if to_cuda:
+        img2img = img2img.to(DEVICE_CUDA)
+    else:
+        del img2img
+
     refiner = StableDiffusionXLImg2ImgPipeline.from_pretrained(
         REFINER_ID,
         torch_dtype=torch.float16,
         add_watermark=False,
     )
-    inpaint = None
-
     if to_cuda:
-        text2img = text2img.to(DEVICE_CUDA)
-        img2img = img2img.to(DEVICE_CUDA)
         refiner = refiner.to(DEVICE_CUDA)
+    else:
+        del refiner
+
+    inpaint = None
 
     return StableDiffusionPipeObject(
         text2img=cast(StableDiffusionXLPipeline, text2img),
