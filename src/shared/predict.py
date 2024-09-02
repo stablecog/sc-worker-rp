@@ -42,7 +42,7 @@ def create_predict_func(
                 default_scheduler=default_scheduler,
             )
         except ValidationError as e:
-            print(f"Validation error: {e}")
+            print(f"🔴 Validation error:", e.errors())
             return {
                 "error": {
                     "code": "validation_error",
