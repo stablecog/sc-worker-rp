@@ -203,7 +203,7 @@ class UploadObject:
         self.target_quality = target_quality
 
 
-def prediction_input_to_generate_input(
+def predict_input_to_generate_input(
     input: PredictionGenerateInput,
 ) -> GenerateInput:
     return GenerateInput(

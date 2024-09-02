@@ -1,17 +1,18 @@
 import torch
-from .constants import MODEL_ID, REFINER_ID
+from .constants import MODEL_ID, REFINER_ID, VARIANT
 from src.shared.classes import StableDiffusionPipeObject
 from diffusers import StableDiffusionXLPipeline, StableDiffusionXLImg2ImgPipeline
 from src.shared.constants import DEVICE_CUDA
 from typing import cast
 
 
-def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject | None:
+def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject:
     text2img = StableDiffusionXLPipeline.from_pretrained(
         MODEL_ID,
         torch_dtype=torch.float16,
         add_watermark=False,
         safety_checker=None,
+        variant=VARIANT,
     )
     if to_cuda:
         text2img = text2img.to(DEVICE_CUDA)
@@ -24,6 +25,7 @@ def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject | None:
         torch_dtype=torch.float16,
         add_watermark=False,
         safety_checker=None,
+        variant=VARIANT,
     )
     if to_cuda:
         img2img = img2img.to(DEVICE_CUDA)
@@ -35,6 +37,7 @@ def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject | None:
         REFINER_ID,
         torch_dtype=torch.float16,
         add_watermark=False,
+        variant=VARIANT,
     )
     if to_cuda:
         refiner = refiner.to(DEVICE_CUDA)

@@ -1,7 +1,8 @@
 import torch
-from typing import List
 from pydantic import ValidationError
 import runpod
+
+from src.shared.response import get_generate_response
 from .constants import (
     MODEL_NAME,
 )
@@ -10,10 +11,8 @@ from src.stable_diffusion.generate import generate
 from src.shared.classes import (
     PredictionGenerateInput,
     StableDiffusionPipeObject,
-    UploadObject,
-    prediction_input_to_generate_input,
+    predict_input_to_generate_input,
 )
-from src.shared.upload import upload_images
 
 torch.cuda.empty_cache()
 
@@ -36,31 +35,18 @@ def predict(job):
     except ValidationError as e:
         return {"error": {"code": "validation_failed", "message": e.json()}}
 
-    generate_input = prediction_input_to_generate_input(validated_input)
+    generate_input = predict_input_to_generate_input(validated_input)
     outputs = generate(
         input=generate_input,
         pipe_object=MODEL.pipe_object,
         model_name=MODEL_NAME,
     )
 
-    upload_objects: List[UploadObject] = []
-    for i, output in enumerate(outputs):
-        upload_objects.append(
-            UploadObject(
-                pil_image=output.image,
-                signed_url=validated_input.signed_urls[i],
-                target_extension=validated_input.output_image_extension,
-                target_quality=validated_input.output_image_quality,
-            )
-        )
-    upload_results = upload_images(
-        upload_objects=upload_objects,
+    response = get_generate_response(
+        outputs=outputs,
+        validated_input=validated_input,
+        job_input=job_input,
     )
-
-    response = {"output": {"images": []}, "input": job_input}
-    for upload_result in upload_results:
-        response["output"]["images"].append(upload_result.image_url)
-
     return response
 
 
