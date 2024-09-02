@@ -2,10 +2,10 @@ import torch
 from typing import List
 from pydantic import ValidationError
 import runpod
-from src.endpoints.ssd_1b.constants import (
+from .constants import (
     MODEL_NAME,
 )
-from src.endpoints.ssd_1b.pipe_object import get_pipe_object
+from .pipe_object import get_pipe_object
 from src.stable_diffusion.generate import generate
 from src.shared.classes import (
     PredictionGenerateInput,

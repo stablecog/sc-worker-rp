@@ -1,15 +1,13 @@
 import os
 import time
 from typing import Any, List, cast
-
-from src.endpoints.kandinsky_22.constants import MODEL_NAME
+from .constants import MODEL_NAME
 from src.shared.classes import (
     GenerateInput,
     GenerateOutput,
     Kandinsky22PipeObject,
 )
 from src.shared.constants import DEVICE_CUDA
-
 from .helpers import get_scheduler
 from src.shared.helpers import (
     crop_images,

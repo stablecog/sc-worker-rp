@@ -1,5 +1,5 @@
 import torch
-from src.endpoints.kandinsky_22.constants import MODEL_ID, PRIOR_MODEL_ID
+from .constants import MODEL_ID, PRIOR_MODEL_ID
 from src.shared.classes import Kandinsky22PipeObject
 from diffusers import (
     KandinskyV22Pipeline,

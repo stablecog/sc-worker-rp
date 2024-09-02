@@ -2,8 +2,8 @@ import torch
 from typing import List
 from pydantic import ValidationError
 import runpod
-from src.endpoints.kandinsky_22.generate import generate
-from src.endpoints.kandinsky_22.pipe_object import get_pipe_object
+from .generate import generate
+from .pipe_object import get_pipe_object
 from src.shared.classes import (
     Kandinsky22PipeObject,
     PredictionGenerateInput,

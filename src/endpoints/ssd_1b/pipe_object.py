@@ -1,5 +1,5 @@
 import torch
-from src.endpoints.ssd_1b.constants import MODEL_ID, REFINER_ID
+from .constants import MODEL_ID, REFINER_ID
 from src.shared.classes import StableDiffusionPipeObject
 from diffusers import StableDiffusionXLPipeline, StableDiffusionXLImg2ImgPipeline
 
