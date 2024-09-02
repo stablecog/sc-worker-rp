@@ -164,7 +164,7 @@ class PredictionGenerateInput(BaseModel):
         default=512,
     )
     signed_urls: List[str] = Field(
-        description="List of signed URLs for images to be uploaded to.", default=None
+        description="List of signed URLs for images to be uploaded to."
     )
 
     @validator("height")
@@ -198,6 +198,14 @@ class PredictionGenerateInput(BaseModel):
         if v is not None and values.get("init_image_url") is None:
             raise ValueError(
                 "init_image_url must be provided when mask_image_url is set."
+            )
+        return v
+
+    @validator("signed_urls")
+    def validate_signed_urls(cls, v, values):
+        if not isinstance(v, list) or len(v) < values.get("num_outputs", 1):
+            raise ValueError(
+                "signed_urls must be a list with at least as many elements as num_outputs."
             )
         return v
 
