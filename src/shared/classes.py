@@ -10,7 +10,7 @@ from diffusers import (
     FluxPipeline,
     StableDiffusion3Pipeline,
 )
-from typing import Any, Generic, List, Optional, TypeVar
+from typing import Any, Dict, Generic, List, Optional, TypeVar
 from pydantic import BaseModel, Field, validator
 
 from .constants import SIZE_LIST
@@ -165,6 +165,9 @@ class PredictionGenerateInput(BaseModel):
     )
     signed_urls: List[str] = Field(
         description="List of signed URLs for images to be uploaded to."
+    )
+    metadata: Optional[Dict[str, Any]] = Field(
+        description="Optional metadata to be returned with the response.", default=None
     )
 
     @validator("height")

@@ -1,3 +1,4 @@
+import json
 from typing import Callable, List, TypeVar
 from pydantic import ValidationError
 import torch
@@ -37,7 +38,13 @@ def create_predict_func(
             validated_input = PredictionGenerateInput(**job_input)
         except ValidationError as e:
             print(f"Validation error: {e}")
-            return {"error": {"code": "validation_failed", "message": e.errors()}}
+            return {
+                "error": {
+                    "code": "validation_error",
+                    "message": e.json(),
+                },
+                "input": job_input,
+            }
 
         generate_input = predict_input_to_generate_input(validated_input)
         outputs = generate(
