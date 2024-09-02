@@ -1,3 +1,4 @@
+import math
 import os
 from typing import Any, List, cast
 import torch
@@ -156,11 +157,13 @@ def generate(
     log_gpu_memory(message="After inference")
 
     if pipe_object.refiner is not None:
+        half_steps = math.floor(input.num_inference_steps / 2)
+        refiner_steps = half_steps + (5 - half_steps % 5)
         args = {
             "prompt": prompt,
             "negative_prompt": negative_prompt,
             "guidance_scale": input.guidance_scale,
-            "num_inference_steps": input.num_inference_steps,
+            "num_inference_steps": refiner_steps,
         }
 
         s = time.time()
