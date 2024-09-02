@@ -7,7 +7,7 @@ from requests.adapters import HTTPAdapter
 import requests
 from urllib.parse import urlparse
 
-from src.shared.classes import UploadObject
+from .classes import UploadObject
 from .helpers import parse_content_type, time_log
 from concurrent.futures import Future, ThreadPoolExecutor
 

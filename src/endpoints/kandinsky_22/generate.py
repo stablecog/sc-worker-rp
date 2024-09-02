@@ -2,7 +2,7 @@ import os
 import time
 from typing import List
 
-from src.endpoints.kandinsky_22.constants import KANDINSKY_22_MODEL_NAME
+from src.endpoints.kandinsky_22.constants import MODEL_NAME
 from src.shared.classes import (
     GenerateInput,
     GenerateOutput,
@@ -189,7 +189,7 @@ def generate(
 
     inference_end = time.time()
     logging.info(
-        f"🔮 🟢 Inference | {KANDINSKY_22_MODEL_NAME} | {input.num_outputs} image(s) | {round((inference_end - inference_start) * 1000)}ms"
+        f"🔮 🟢 Inference | {MODEL_NAME} | {input.num_outputs} image(s) | {round((inference_end - inference_start) * 1000)}ms"
     )
 
     outputs: List[GenerateOutput] = []

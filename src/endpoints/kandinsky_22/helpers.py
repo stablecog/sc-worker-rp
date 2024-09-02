@@ -1,4 +1,4 @@
-from .constants import KANDINSKY_22_SCHEDULERS
+from src.shared.schedulers import KANDINSKY_22_SCHEDULERS
 from diffusers import (
     KandinskyV22Pipeline,
     KandinskyV22Img2ImgPipeline,

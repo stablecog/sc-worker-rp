@@ -2,11 +2,14 @@ import torch
 from typing import List
 from pydantic import ValidationError
 import runpod
-from src.endpoints.kandinsky_22.generate import generate
-from src.endpoints.kandinsky_22.pipe_object import get_pipe_object
+from src.endpoints.ssd_1b.constants import (
+    MODEL_NAME,
+)
+from src.endpoints.ssd_1b.pipe_object import get_pipe_object
+from src.stable_diffusion.generate import generate
 from src.shared.classes import (
-    Kandinsky22PipeObject,
     PredictionGenerateInput,
+    StableDiffusionPipeObject,
     UploadObject,
     prediction_input_to_generate_input,
 )
@@ -17,7 +20,7 @@ torch.cuda.empty_cache()
 
 class Model:
     def __init__(self):
-        self.pipe_object: Kandinsky22PipeObject = get_pipe_object()
+        self.pipe_object: StableDiffusionPipeObject = get_pipe_object()
 
 
 MODEL = Model()
@@ -37,6 +40,7 @@ def predict(job):
     outputs = generate(
         input=generate_input,
         pipe_object=MODEL.pipe_object,
+        model_name=MODEL_NAME,
     )
 
     upload_objects: List[UploadObject] = []

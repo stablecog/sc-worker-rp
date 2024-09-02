@@ -10,6 +10,9 @@ from diffusers import (
     DEISMultistepScheduler,
     UniPCMultistepScheduler,
     DDPMScheduler,
+    DDIMScheduler,
+    DDPMScheduler,
+    DPMSolverMultistepScheduler,
 )
 
 SD_SCHEDULERS = {
@@ -28,3 +31,12 @@ SD_SCHEDULERS = {
 
 SD_SCHEDULER_CHOICES = [*SD_SCHEDULERS.keys()]
 SD_SCHEDULER_DEFAULT = SD_SCHEDULER_CHOICES[0]
+
+KANDINSKY_22_SCHEDULERS = {
+    "DDPM": {
+        "scheduler": DDPMScheduler,
+        "from_config": True,
+    },
+    "DDIM": {"scheduler": DDIMScheduler},
+    "DPM++_2M": {"scheduler": DPMSolverMultistepScheduler},
+}

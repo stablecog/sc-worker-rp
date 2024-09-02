@@ -14,7 +14,7 @@ from typing import Any, List, TypeVar
 from pydantic import BaseModel, Field, validator
 
 from src.shared.constants import SIZE_LIST
-from src.shared.sd import SD_SCHEDULER_DEFAULT
+from src.shared.schedulers import SD_SCHEDULER_DEFAULT
 from PIL import Image
 
 T = TypeVar("T")
