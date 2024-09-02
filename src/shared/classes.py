@@ -137,9 +137,15 @@ class PredictionGenerateInput(BaseModel):
     guidance_scale: float = Field(
         description="Scale for classifier-free guidance.", ge=1, le=20, default=7.5
     )
+    schedulers: List[str] = Field(
+        description="List of available schedulers.",
+    )
+    default_scheduler: str = Field(
+        description="Default scheduler.",
+    )
     scheduler: str = Field(
-        default=SD_SCHEDULER_DEFAULT,
-        description=f'Choose a scheduler. Defaults to "{SD_SCHEDULER_DEFAULT}".',
+        description=f"Choose a scheduler.",
+        default=default_scheduler,
     )
     seed: int = Field(
         description="Random seed. Leave blank to randomize the seed.", default=None
@@ -219,6 +225,14 @@ class PredictionGenerateInput(BaseModel):
         if v not in values.get("schedulers", []):
             raise ValueError(
                 f"Invalid scheduler: {v}. Must be one of {values['schedulers']}."
+            )
+        return v
+
+    @validator("default_scheduler")
+    def validate_default_scheduler(cls, v, values):
+        if v not in values.get("schedulers", []):
+            raise ValueError(
+                f"Invalid default_scheduler: {v}. Must be one of {values['schedulers']}."
             )
         return v
 

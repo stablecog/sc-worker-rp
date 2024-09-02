@@ -6,7 +6,7 @@ from enum import Enum
 
 
 DEVICE_CUDA = "cuda"
-WORKER_VERSION = "v3.30"
+WORKER_VERSION = "v1.02"
 SIZE_LIST = list(range(256, 1537, 8))
 
 

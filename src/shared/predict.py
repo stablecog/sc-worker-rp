@@ -1,7 +1,5 @@
-import json
 from typing import Callable, List, TypeVar
 from pydantic import ValidationError
-import torch
 
 from src.shared.constants import WORKER_VERSION
 from .upload import upload_images
@@ -22,6 +20,7 @@ def create_predict_func(
     get_pipe_object: Callable[[bool], T],
     generate: Callable[[GenerateFunctionProps[T]], List[GenerateOutput]],
     schedulers: List[str],
+    default_scheduler: str,
     default_prompt_prefix: str | None = None,
     default_negative_prompt_prefix: str | None = None,
     dont_set_scheduler: bool = False,
@@ -38,7 +37,9 @@ def create_predict_func(
 
         try:
             validated_input = PredictionGenerateInput(
-                **job_input, schedulers=schedulers
+                **job_input,
+                schedulers=schedulers,
+                default_scheduler=default_scheduler,
             )
         except ValidationError as e:
             print(f"Validation error: {e}")
