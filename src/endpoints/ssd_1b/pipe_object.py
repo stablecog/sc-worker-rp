@@ -6,7 +6,7 @@ from src.shared.constants import DEVICE_CUDA
 from typing import cast
 
 
-def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject:
+def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject | None:
     text2img = StableDiffusionXLPipeline.from_pretrained(
         MODEL_ID,
         torch_dtype=torch.float16,
@@ -17,6 +17,7 @@ def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject:
         text2img = text2img.to(DEVICE_CUDA)
     else:
         del text2img
+        text2img = None
 
     img2img = StableDiffusionXLImg2ImgPipeline.from_pretrained(
         MODEL_ID,
@@ -28,6 +29,7 @@ def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject:
         img2img = img2img.to(DEVICE_CUDA)
     else:
         del img2img
+        img2img = None
 
     refiner = StableDiffusionXLImg2ImgPipeline.from_pretrained(
         REFINER_ID,
@@ -38,6 +40,7 @@ def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject:
         refiner = refiner.to(DEVICE_CUDA)
     else:
         del refiner
+        img2img = None
 
     inpaint = None
 
