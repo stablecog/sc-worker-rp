@@ -1,5 +1,5 @@
 import torch
-from .constants import MODEL_ID, REFINER_ID, VARIANT
+from .constants import DEFAULT_LORA_ID, MODEL_ID, REFINER_ID, VARIANT
 from src.shared.classes import StableDiffusionPipeObject
 from diffusers import StableDiffusionXLPipeline, StableDiffusionXLImg2ImgPipeline
 from src.shared.constants import DEVICE_CUDA
@@ -13,6 +13,10 @@ def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject:
         add_watermark=False,
         safety_checker=None,
         variant=VARIANT,
+    )
+    text2img.load_lora_weights(
+        MODEL_ID,
+        weight_name=DEFAULT_LORA_ID,
     )
 
     img2img = None

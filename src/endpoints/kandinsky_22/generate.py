@@ -3,12 +3,11 @@ import time
 from typing import Any, List, cast
 from .constants import MODEL_NAME
 from src.shared.classes import (
-    GenerateInput,
+    GenerateFunctionProps,
     GenerateOutput,
     Kandinsky22PipeObject,
 )
 from src.shared.constants import DEVICE_CUDA
-from .helpers import get_scheduler
 from src.shared.helpers import (
     crop_images,
     download_and_fit_image,
@@ -19,6 +18,12 @@ from src.shared.helpers import (
 import torch
 import logging
 from PIL import Image
+from src.shared.schedulers import KANDINSKY_22_SCHEDULERS
+from diffusers import (
+    KandinskyV22Pipeline,
+    KandinskyV22Img2ImgPipeline,
+    KandinskyV22InpaintPipeline,
+)
 
 PRIOR_STEPS = 25
 PRIOR_GUIDANCE_SCALE = 4.0
@@ -27,10 +32,28 @@ PRIOR_GUIDANCE_SCALE = 4.0
 kandinsky_2_2_negative_prompt_prefix = "overexposed"
 
 
+def get_scheduler(
+    name: str,
+    pipeline: (
+        KandinskyV22Pipeline | KandinskyV22InpaintPipeline | KandinskyV22Img2ImgPipeline
+    ),
+):
+    if "from_config" in KANDINSKY_22_SCHEDULERS[name]:
+        return KANDINSKY_22_SCHEDULERS[name]["scheduler"].from_config(
+            pipeline.scheduler.config
+        )
+    else:
+        return KANDINSKY_22_SCHEDULERS[name]["scheduler"]()
+
+
 def generate(
-    input: GenerateInput,
-    pipe_object: Kandinsky22PipeObject,
+    props: GenerateFunctionProps[Kandinsky22PipeObject],
 ) -> List[GenerateOutput]:
+    # Props
+    input = props.input
+    pipe_object = props.pipe_object
+    # ---------------------------------------------------------------------
+
     inference_start = time.time()
     prompt = input.prompt
     negative_prompt = input.negative_prompt

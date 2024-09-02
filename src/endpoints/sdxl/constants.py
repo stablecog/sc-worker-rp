@@ -1,0 +1,5 @@
+MODEL_NAME = "SDXL"
+MODEL_ID = "stabilityai/stable-diffusion-xl-base-1.0"
+REFINER_ID = "stabilityai/stable-diffusion-xl-refiner-1.0"
+VARIANT = "fp16"
+DEFAULT_LORA_ID = "sd_xl_offset_example-lora_1.0.safetensors"

@@ -1,12 +1,14 @@
 import os
 from typing import Any, List, cast
 import torch
-
-from src.shared.classes import GenerateInput, GenerateOutput, StableDiffusionPipeObject
+from src.shared.classes import (
+    GenerateFunctionProps,
+    GenerateOutput,
+    StableDiffusionPipeObject,
+)
 from src.shared.constants import DEVICE_CUDA
-from .helpers import get_scheduler
 import time
-from shared.helpers import (
+from src.shared.helpers import (
     download_and_fit_image,
     log_gpu_memory,
 )
@@ -21,16 +23,25 @@ from diffusers import (
 )
 import logging
 from PIL import Image
+from src.shared.schedulers import SD_SCHEDULERS
+
+
+def get_scheduler(name, config):
+    return SD_SCHEDULERS[name]["from_config"](config)
 
 
 def generate(
-    input: GenerateInput,
-    pipe_object: StableDiffusionPipeObject,
-    model_name: str,
-    default_prompt_prefix: str | None = None,
-    default_negative_prompt_prefix: str | None = None,
-    dont_set_scheduler: bool = False,
+    props: GenerateFunctionProps[StableDiffusionPipeObject],
 ) -> List[GenerateOutput]:
+    # Props
+    input = props.input
+    pipe_object = props.pipe_object
+    model_name = props.model_name
+    default_prompt_prefix = props.default_prompt_prefix
+    default_negative_prompt_prefix = props.default_negative_prompt_prefix
+    dont_set_scheduler = props.dont_set_scheduler
+    # ---------------------------------------------------------------------
+
     inference_start = time.time()
     prompt = input.prompt
     negative_prompt = input.negative_prompt

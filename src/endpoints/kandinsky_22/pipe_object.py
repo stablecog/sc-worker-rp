@@ -37,3 +37,7 @@ def get_pipe_object(to_cuda: bool = True) -> Kandinsky22PipeObject:
         text2img=cast(KandinskyV22Pipeline, text2img),
         inpaint=inpaint,
     )
+
+
+if __name__ == "__main__":
+    get_pipe_object(to_cuda=False)

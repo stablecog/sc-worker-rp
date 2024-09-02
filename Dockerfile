@@ -16,8 +16,8 @@ COPY . .
 RUN python3 -m pip install --upgrade pip && \
   python3 -m pip install --ignore-installed --upgrade -r requirements.txt --no-cache-dir
 
-# Run the model-specific builder script
-RUN python3 -m src.endpoints.${MODEL_FOLDER}.builder
+# Download the models so that they are included in the Docker image
+RUN python3 -m src.endpoints.${MODEL_FOLDER}.pipe_object
 
 # Set the CMD to run the model-specific handler script
 CMD python3 -m src.endpoints.${MODEL_FOLDER}.handler

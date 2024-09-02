@@ -10,7 +10,7 @@ from diffusers import (
     FluxPipeline,
     StableDiffusion3Pipeline,
 )
-from typing import Any, List, TypeVar
+from typing import Any, Generic, List, TypeVar
 from pydantic import BaseModel, Field, validator
 
 from .constants import SIZE_LIST
@@ -222,3 +222,24 @@ def predict_input_to_generate_input(
         scheduler=input.scheduler,
         seed=input.seed,
     )
+
+
+P = TypeVar("P")
+
+
+class GenerateFunctionProps(Generic[P]):
+    def __init__(
+        self,
+        input: GenerateInput,
+        pipe_object: P,
+        model_name: str,
+        default_prompt_prefix: str | None = None,
+        default_negative_prompt_prefix: str | None = None,
+        dont_set_scheduler: bool = False,
+    ):
+        self.input = input
+        self.pipe_object = pipe_object
+        self.model_name = model_name
+        self.default_prompt_prefix = default_prompt_prefix
+        self.default_negative_prompt_prefix = default_negative_prompt_prefix
+        self.dont_set_scheduler = dont_set_scheduler
