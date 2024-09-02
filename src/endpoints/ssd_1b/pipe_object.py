@@ -40,7 +40,7 @@ def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject | None:
         refiner = refiner.to(DEVICE_CUDA)
     else:
         del refiner
-        img2img = None
+        refiner = None
 
     inpaint = None
 
