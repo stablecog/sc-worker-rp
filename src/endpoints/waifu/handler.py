@@ -3,7 +3,7 @@ import runpod
 from src.shared.predict import create_predict_for_generate
 from src.shared.schedulers import SD_SCHEDULER_CHOICES, SD_SCHEDULER_DEFAULT
 from src.shared.stable_diffusion import generate
-from .pipe_object import (
+from .pipe import (
     DEFAULT_NEGATIVE_PROMPT_PREFIX,
     DEFAULT_PROMPT_PREFIX,
     get_pipe_object,
@@ -11,7 +11,6 @@ from .pipe_object import (
 )
 
 torch.cuda.empty_cache()
-
 
 predict = create_predict_for_generate(
     model_name=MODEL_NAME,
