@@ -132,10 +132,10 @@ class PredictionGenerateInput(BaseModel):
         default=None,
     )
     num_inference_steps: int = Field(
-        description="Number of denoising steps", ge=1, le=500, default=30
+        description="Number of denoising steps", ge=1, le=500, default=25
     )
     guidance_scale: float = Field(
-        description="Scale for classifier-free guidance.", ge=1, le=20, default=7.5
+        description="Scale for classifier-free guidance.", ge=1, le=20, default=7
     )
     schedulers: List[str] = Field(
         description="List of available schedulers.",
