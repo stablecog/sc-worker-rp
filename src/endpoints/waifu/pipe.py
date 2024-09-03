@@ -9,6 +9,7 @@ MODEL_ID = "hakurei/waifu-diffusion"
 VARIANT = "fp16"
 DEFAULT_PROMPT_PREFIX = "masterpiece, best quality, high quality"
 DEFAULT_NEGATIVE_PROMPT_PREFIX = "worst quality, low quality, deleted, nsfw, blurry"
+test = "true"
 
 
 def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject:
