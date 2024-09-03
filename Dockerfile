@@ -7,20 +7,17 @@ ARG MODEL_FOLDER
 ENV MODEL_FOLDER=${MODEL_FOLDER}
 
 # Set working directory
-WORKDIR /app
+WORKDIR /
 
-# Copy the entire project into the /app directory
-COPY . /app
-
-# Add the current directory to PYTHONPATH
-ENV PYTHONPATH=/app:$PYTHONPATH
+# Copy the entire project into the root directory
+COPY . .
 
 # Install dependencies
 RUN python3 -m pip install --upgrade pip && \
   python3 -m pip install --ignore-installed --upgrade -r requirements.txt --no-cache-dir
 
 # Download the models so that they are included in the Docker image
-RUN python3 -m src.endpoints.${MODEL_FOLDER}.pipe_object
+RUN python3 -m src.endpoints.${MODEL_FOLDER}.pipe
 
 # Set the CMD to run the model-specific handler script
 CMD python3 -m src.endpoints.${MODEL_FOLDER}.handler
