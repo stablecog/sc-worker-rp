@@ -7,7 +7,7 @@ on:
 
 jobs:
   prepare:
-    runs-on: ubuntu-latest
+    runs-on: warp-ubuntu-latest-x64-4x
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -19,12 +19,12 @@ jobs:
 
   build-and-push:
     needs: prepare
-    runs-on: ubuntu-latest
+    runs-on: warp-ubuntu-latest-x64-4x
     strategy:
       matrix:
         model: ${{fromJson(needs.prepare.outputs.matrix)}}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Free disk space
         run: |
