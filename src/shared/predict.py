@@ -34,6 +34,8 @@ def create_predict_for_generate(
 
     MODEL = Model()
 
+    print("this is a test")
+
     def predict(job):
         job_input = job["input"]
         validated_input: PredictionGenerateInput | None = None
