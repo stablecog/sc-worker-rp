@@ -61,5 +61,3 @@ jobs:
           tags: |
             stablecog/sc-worker-rp-${{ matrix.model }}:${{ needs.prepare.outputs.release_version }}
             stablecog/sc-worker-rp-${{ matrix.model }}:latest
-          cache-from: type=registry,ref=stablecog/sc-worker-rp-${{ matrix.model }}:buildcache
-          cache-to: type=registry,ref=stablecog/sc-worker-rp-${{ matrix.model }}:buildcache,mode=max
