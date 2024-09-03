@@ -7,10 +7,13 @@ ARG MODEL_FOLDER
 ENV MODEL_FOLDER=${MODEL_FOLDER}
 
 # Set working directory
-WORKDIR /
+WORKDIR /app
 
-# Copy the entire project into the root directory
-COPY . .
+# Copy the entire project into the /app directory
+COPY . /app
+
+# Add the current directory to PYTHONPATH
+ENV PYTHONPATH=/app:$PYTHONPATH
 
 # Install dependencies
 RUN python3 -m pip install --upgrade pip && \
