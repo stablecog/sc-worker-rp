@@ -3,23 +3,28 @@ name: Build and Push Model Images
 on:
   push:
     tags:
-      - "release*"
+      - "release-*"
 
 jobs:
   prepare:
-    runs-on: warp-ubuntu-latest-x64-4x
+    runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      release_version: ${{ steps.get-release-version.outputs.release_version }}
     steps:
       - uses: actions/checkout@v4
       - id: set-matrix
         run: |
           MODELS=$(find src/endpoints -type f -name handler.py | xargs -n1 dirname | xargs -n1 basename | jq -R -s -c 'split("\n")[:-1]')
-          echo "::set-output name=matrix::${MODELS}"
+          echo "matrix=${MODELS}" >> $GITHUB_OUTPUT
+      - id: get-release-version
+        run: |
+          RELEASE_VERSION=$(echo ${{ github.ref_name }} | sed 's/release-//')
+          echo "release_version=${RELEASE_VERSION}" >> $GITHUB_OUTPUT
 
   build-and-push:
     needs: prepare
-    runs-on: warp-ubuntu-latest-x64-4x
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         model: ${{fromJson(needs.prepare.outputs.matrix)}}
@@ -45,10 +50,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Get short SHA
-        id: slug
-        run: echo "::set-output name=sha7::$(echo ${GITHUB_SHA} | cut -c1-7)"
-
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -57,4 +58,8 @@ jobs:
           push: true
           build-args: |
             MODEL_FOLDER=${{ matrix.model }}
-          tags: stablecog/sc-worker-rp-${{ matrix.model }}:${{ steps.slug.outputs.sha7 }}
+          tags: |
+            stablecog/sc-worker-rp-${{ matrix.model }}:${{ needs.prepare.outputs.release_version }}
+            stablecog/sc-worker-rp-${{ matrix.model }}:latest
+          cache-from: type=registry,ref=stablecog/sc-worker-rp-${{ matrix.model }}:buildcache
+          cache-to: type=registry,ref=stablecog/sc-worker-rp-${{ matrix.model }}:buildcache,mode=max
