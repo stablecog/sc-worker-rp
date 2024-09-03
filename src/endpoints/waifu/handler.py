@@ -2,7 +2,7 @@ import torch
 import runpod
 from src.shared.predict import create_predict_for_generate
 from src.shared.schedulers import SD_SCHEDULER_CHOICES, SD_SCHEDULER_DEFAULT
-from src.shared.stable_diffusion import generate
+from src.shared.sd import generate
 from .pipe import (
     DEFAULT_NEGATIVE_PROMPT_PREFIX,
     DEFAULT_PROMPT_PREFIX,
