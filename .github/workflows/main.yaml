@@ -44,15 +44,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Restore cached dependencies
-        id: cache-deps-restore
-        uses: WarpBuilds/cache/restore@v1
-        with:
-          path: |
-            ~/.cache/pip
-            /tmp/.buildx-cache
-          key: ${{ runner.os }}-deps-${{ matrix.model }}-${{ hashFiles('**/requirements.txt') }}
-
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -70,19 +61,3 @@ jobs:
           tags: |
             stablecog/sc-worker-rp-${{ matrix.model }}:${{ needs.prepare.outputs.release_version }}
             stablecog/sc-worker-rp-${{ matrix.model }}:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-      - name: Save dependencies cache
-        id: cache-deps-save
-        uses: WarpBuilds/cache/save@v1
-        with:
-          path: |
-            ~/.cache/pip
-            /tmp/.buildx-cache
-          key: ${{ steps.cache-deps-restore.outputs.cache-primary-key }}
