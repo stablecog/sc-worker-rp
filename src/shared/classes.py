@@ -36,8 +36,8 @@ class StableDiffusionPipeObject:
         img2img: (
             StableDiffusionImg2ImgPipeline | StableDiffusionXLImg2ImgPipeline | None
         ),
-        inpaint: StableDiffusionInpaintPipeline | None,
-        refiner: StableDiffusionXLImg2ImgPipeline | None,
+        inpaint: StableDiffusionInpaintPipeline | None = None,
+        refiner: StableDiffusionXLImg2ImgPipeline | None = None,
     ):
         self.text2img = text2img
         self.img2img = img2img
@@ -50,7 +50,7 @@ class Kandinsky22PipeObject:
         self,
         prior: KandinskyV22PriorPipeline,
         text2img: KandinskyV22Pipeline,
-        inpaint: KandinskyV22InpaintPipeline | None,
+        inpaint: KandinskyV22InpaintPipeline | None = None,
     ):
         self.prior = prior
         self.text2img = text2img

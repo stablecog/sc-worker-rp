@@ -33,12 +33,9 @@ def get_pipe_object(to_cuda: bool = True) -> Kandinsky22PipeObject:
         del text2img
         text2img = None
 
-    inpaint = None
-
     return Kandinsky22PipeObject(
         prior=cast(KandinskyV22PriorPipeline, prior),
         text2img=cast(KandinskyV22Pipeline, text2img),
-        inpaint=inpaint,
     )
 
 
