@@ -1,0 +1,60 @@
+name: Build and Push Model Images
+
+on:
+  push:
+    tags:
+      - "release*"
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: set-matrix
+        run: |
+          MODELS=$(find src/endpoints -type f -name handler.py | xargs -n1 dirname | xargs -n1 basename | jq -R -s -c 'split("\n")[:-1]')
+          echo "::set-output name=matrix::${MODELS}"
+
+  build-and-push:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        model: ${{fromJson(needs.prepare.outputs.matrix)}}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo apt clean
+          docker rmi $(docker image ls -aq)
+          df -h
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Get short SHA
+        id: slug
+        run: echo "::set-output name=sha7::$(echo ${GITHUB_SHA} | cut -c1-7)"
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          build-args: |
+            MODEL_FOLDER=${{ matrix.model }}
+          tags: stablecog/sc-worker-rp-${{ matrix.model }}:${{ steps.slug.outputs.sha7 }}
