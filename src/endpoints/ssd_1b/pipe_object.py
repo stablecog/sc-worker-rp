@@ -1,9 +1,13 @@
 import torch
-from .constants import MODEL_ID, REFINER_ID, VARIANT
 from src.shared.classes import StableDiffusionPipeObject
 from diffusers import StableDiffusionXLPipeline, StableDiffusionXLImg2ImgPipeline
 from src.shared.constants import DEVICE_CUDA
 from typing import cast
+
+MODEL_NAME = "SSD-1B"
+MODEL_ID = "segmind/SSD-1B"
+REFINER_ID = "stabilityai/stable-diffusion-xl-refiner-1.0"
+VARIANT = "fp16"
 
 
 def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject:

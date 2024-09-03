@@ -1,7 +1,6 @@
 import os
 import time
 from typing import Any, List, cast
-from .constants import MODEL_NAME
 from src.shared.classes import (
     GenerateFunctionProps,
     GenerateOutput,
@@ -52,6 +51,7 @@ def generate(
     # Props
     input = props.input
     pipe_object = props.pipe_object
+    model_name = props.model_name
     # ---------------------------------------------------------------------
 
     inference_start = time.time()
@@ -231,7 +231,7 @@ def generate(
 
     inference_end = time.time()
     logging.info(
-        f"🔮 🟢 Inference | {MODEL_NAME} | {input.num_outputs} image(s) | {round((inference_end - inference_start) * 1000)}ms"
+        f"🔮 🟢 Inference | {model_name} | {input.num_outputs} image(s) | {round((inference_end - inference_start) * 1000)}ms"
     )
 
     outputs: List[GenerateOutput] = []

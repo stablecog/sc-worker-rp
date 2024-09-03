@@ -1,9 +1,14 @@
 import torch
-from .constants import DEFAULT_LORA_ID, MODEL_ID, REFINER_ID, VARIANT
 from src.shared.classes import StableDiffusionPipeObject
 from diffusers import StableDiffusionXLPipeline, StableDiffusionXLImg2ImgPipeline
 from src.shared.constants import DEVICE_CUDA
 from typing import cast
+
+MODEL_NAME = "SDXL"
+MODEL_ID = "stabilityai/stable-diffusion-xl-base-1.0"
+REFINER_ID = "stabilityai/stable-diffusion-xl-refiner-1.0"
+VARIANT = "fp16"
+DEFAULT_LORA_ID = "sd_xl_offset_example-lora_1.0.safetensors"
 
 
 def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject:

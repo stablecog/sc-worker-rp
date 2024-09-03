@@ -2,10 +2,7 @@ import torch
 import runpod
 from src.shared.predict import create_predict_for_generate
 from src.shared.schedulers import SD_SCHEDULER_CHOICES, SD_SCHEDULER_DEFAULT
-from .constants import (
-    MODEL_NAME,
-)
-from .pipe_object import get_pipe_object
+from .pipe_object import get_pipe_object, MODEL_NAME
 from src.shared.stable_diffusion import generate
 
 torch.cuda.empty_cache()

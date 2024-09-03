@@ -1,5 +1,4 @@
 import torch
-from .constants import MODEL_ID, PRIOR_MODEL_ID
 from src.shared.classes import Kandinsky22PipeObject
 from diffusers import (
     KandinskyV22Pipeline,
@@ -7,6 +6,10 @@ from diffusers import (
 )
 from src.shared.constants import DEVICE_CUDA
 from typing import cast
+
+MODEL_NAME = "Kandinsky 2.2"
+MODEL_ID = "kandinsky-community/kandinsky-2-2-decoder"
+PRIOR_MODEL_ID = "kandinsky-community/kandinsky-2-2-prior"
 
 
 def get_pipe_object(to_cuda: bool = True) -> Kandinsky22PipeObject:

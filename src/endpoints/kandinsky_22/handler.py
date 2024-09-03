@@ -5,9 +5,8 @@ from src.shared.schedulers import (
     KANDINSKY_22_SCHEDULER_CHOICES,
     KANDINSKY_22_SCHEDULER_DEFAULT,
 )
-from .constants import MODEL_NAME
 from .generate import generate
-from .pipe_object import get_pipe_object
+from .pipe_object import MODEL_NAME, get_pipe_object
 
 torch.cuda.empty_cache()
 
