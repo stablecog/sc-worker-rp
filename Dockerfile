@@ -25,9 +25,6 @@ COPY src/shared/classes.py /app/src/shared/classes.py
 COPY src/shared/constants.py /app/src/shared/constants.py
 COPY src/endpoints/${MODEL_FOLDER}/pipe.py /app/src/endpoints/${MODEL_FOLDER}/pipe.py
 
-# Set environment variable to prevent CUDA initialization
-ENV CUDA_VISIBLE_DEVICES=
-
 # Download the models
 RUN python3 -c "import os; import importlib; MODEL_FOLDER = os.environ['MODEL_FOLDER']; pipe = importlib.import_module(f'src.endpoints.{MODEL_FOLDER}.pipe'); pipe.get_pipe_object(to_cuda=False)"
 
