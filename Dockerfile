@@ -20,8 +20,13 @@ ENV HF_DATASETS_CACHE=/app/hf_cache
 ENV HF_HOME=/app/hf_cache
 
 # Copy only the necessary files for model download
-COPY src/shared /app/src/shared
+COPY src/shared/__init__.py /app/src/shared/__init__.py
+COPY src/shared/classes.py /app/src/shared/classes.py
+COPY src/shared/constants.py /app/src/shared/constants.py
 COPY src/endpoints/${MODEL_FOLDER}/pipe.py /app/src/endpoints/${MODEL_FOLDER}/pipe.py
+
+# Set environment variable to prevent CUDA initialization
+ENV CUDA_VISIBLE_DEVICES=
 
 # Download the models
 RUN python3 -c "import os; import importlib; MODEL_FOLDER = os.environ['MODEL_FOLDER']; pipe = importlib.import_module(f'src.endpoints.{MODEL_FOLDER}.pipe'); pipe.get_pipe_object(to_cuda=False)"
