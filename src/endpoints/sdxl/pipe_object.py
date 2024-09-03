@@ -1,8 +1,8 @@
 import torch
-from src.shared.classes import StableDiffusionPipeObject
-from diffusers import StableDiffusionXLPipeline, StableDiffusionXLImg2ImgPipeline
-from src.shared.constants import DEVICE_CUDA
 from typing import cast
+from diffusers import StableDiffusionXLPipeline, StableDiffusionXLImg2ImgPipeline
+from src.shared.classes import StableDiffusionPipeObject
+from src.shared.constants import DEVICE_CUDA
 
 MODEL_NAME = "SDXL"
 MODEL_ID = "stabilityai/stable-diffusion-xl-base-1.0"

@@ -2,7 +2,7 @@ import logging
 import time
 from typing import Callable, List, TypeVar
 from pydantic import ValidationError
-
+from tabulate import tabulate
 from src.shared.constants import WORKER_VERSION, TabulateLevels
 from src.shared.helpers import create_log_table_for_generate
 from .upload import upload_images
@@ -14,7 +14,6 @@ from .classes import (
     predict_input_to_generate_input,
     GenerateFunctionProps,
 )
-from tabulate import tabulate
 
 T = TypeVar("T")
 

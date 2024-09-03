@@ -13,9 +13,8 @@ from diffusers import (
 from typing import Any, Dict, Generic, List, Optional, TypeVar
 from pydantic import BaseModel, Field, validator
 
-from .constants import SIZE_LIST
-from .schedulers import SD_SCHEDULER_DEFAULT
 from PIL import Image
+from .constants import SIZE_LIST
 
 T = TypeVar("T")
 

@@ -1,18 +1,9 @@
-import math
+import logging
+from PIL import Image
 import os
 from typing import Any, List, cast
 import torch
-from src.shared.classes import (
-    GenerateFunctionProps,
-    GenerateOutput,
-    StableDiffusionPipeObject,
-)
-from src.shared.constants import DEVICE_CUDA
 import time
-from src.shared.helpers import (
-    download_and_fit_image,
-    log_gpu_memory,
-)
 from diffusers import (
     StableDiffusionImg2ImgPipeline,
     StableDiffusionXLImg2ImgPipeline,
@@ -22,8 +13,16 @@ from diffusers import (
     StableDiffusion3Pipeline,
     StableDiffusionXLPipeline,
 )
-import logging
-from PIL import Image
+from src.shared.classes import (
+    GenerateFunctionProps,
+    GenerateOutput,
+    StableDiffusionPipeObject,
+)
+from src.shared.constants import DEVICE_CUDA
+from src.shared.helpers import (
+    download_and_fit_image,
+    log_gpu_memory,
+)
 from src.shared.schedulers import SD_SCHEDULERS
 
 

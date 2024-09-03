@@ -1,11 +1,11 @@
 import torch
-from src.shared.classes import Kandinsky22PipeObject
+from typing import cast
 from diffusers import (
     KandinskyV22Pipeline,
     KandinskyV22PriorPipeline,
 )
+from src.shared.classes import Kandinsky22PipeObject
 from src.shared.constants import DEVICE_CUDA
-from typing import cast
 
 MODEL_NAME = "Kandinsky 2.2"
 MODEL_ID = "kandinsky-community/kandinsky-2-2-decoder"

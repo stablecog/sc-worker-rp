@@ -1,6 +1,14 @@
 import os
 import time
+from PIL import Image
+from diffusers import (
+    KandinskyV22Pipeline,
+    KandinskyV22Img2ImgPipeline,
+    KandinskyV22InpaintPipeline,
+)
 from typing import Any, List, cast
+import torch
+import logging
 from src.shared.classes import (
     GenerateFunctionProps,
     GenerateOutput,
@@ -14,15 +22,7 @@ from src.shared.helpers import (
     pad_image_mask_nd,
     pad_image_pil,
 )
-import torch
-import logging
-from PIL import Image
 from src.shared.schedulers import KANDINSKY_22_SCHEDULERS
-from diffusers import (
-    KandinskyV22Pipeline,
-    KandinskyV22Img2ImgPipeline,
-    KandinskyV22InpaintPipeline,
-)
 
 PRIOR_STEPS = 25
 PRIOR_GUIDANCE_SCALE = 4.0

@@ -1,24 +1,17 @@
+import logging
 import time
 import requests
-from PIL import Image
-from io import BytesIO
-from concurrent.futures import ThreadPoolExecutor
-from PIL import ImageOps
-from typing import List, Optional
-from io import BytesIO
 import numpy as np
 import textwrap
 import torch
-
-from io import BytesIO
-import logging
-from tabulate import tabulate
-
-from src.shared.classes import PredictionGenerateInput
-
-from .constants import TabulateLevels
 from contextlib import contextmanager
-from PIL import Image
+from PIL import Image, ImageOps
+from io import BytesIO
+from concurrent.futures import ThreadPoolExecutor
+from typing import List, Optional
+from tabulate import tabulate
+from src.shared.classes import PredictionGenerateInput
+from .constants import TabulateLevels
 
 
 @contextmanager
