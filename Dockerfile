@@ -28,7 +28,9 @@ COPY src/endpoints/${MODEL_FOLDER}/__init__.py /app/src/endpoints/${MODEL_FOLDER
 COPY src/endpoints/${MODEL_FOLDER}/pipe.py /app/src/endpoints/${MODEL_FOLDER}/pipe.py
 
 # Download the models
-RUN python3 -m src.endpoints.${MODEL_FOLDER}.pipe
+RUN --mount=type=secret,id=HF_TOKEN \
+  HF_TOKEN=$(cat /run/secrets/HF_TOKEN) \
+  python3 -m src.endpoints.${MODEL_FOLDER}.pipe
 
 # Delete src so that even if it changes, layer hash stays the same
 RUN rm -rf /app/src

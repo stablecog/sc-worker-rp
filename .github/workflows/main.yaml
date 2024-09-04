@@ -52,8 +52,6 @@ jobs:
 
       - name: Build and push
         uses: docker/build-push-action@v6
-        env:
-          HF_LOGIN: ${{ secrets.HF_LOGIN }}
         with:
           context: .
           file: ./Dockerfile
@@ -63,3 +61,5 @@ jobs:
           tags: |
             stablecog/sc-worker-rp-${{ matrix.model }}:${{ needs.prepare.outputs.release_version }}
             stablecog/sc-worker-rp-${{ matrix.model }}:latest
+          secrets: |
+            "HF_TOKEN=${{ secrets.HF_TOKEN }}"
