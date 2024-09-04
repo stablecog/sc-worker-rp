@@ -1,8 +1,8 @@
 import torch
 from typing import cast
 from diffusers import StableDiffusionPipeline, StableDiffusionImg2ImgPipeline
-from src.shared.classes import StableDiffusionPipeObject
 from src.shared.device import DEVICE_CUDA
+from src.shared.pipe_classes import StableDiffusionPipeObject
 
 MODEL_NAME = "22h Diffusion"
 MODEL_ID = "22h/vintedois-diffusion-v0-1"

@@ -12,7 +12,6 @@ import logging
 from src.shared.classes import (
     GenerateFunctionProps,
     GenerateOutput,
-    Kandinsky22PipeObject,
 )
 from src.shared.device import DEVICE_CUDA
 from src.shared.helpers import (
@@ -22,6 +21,7 @@ from src.shared.helpers import (
     pad_image_mask_nd,
     pad_image_pil,
 )
+from src.shared.pipe_classes import Kandinsky22PipeObject
 from src.shared.schedulers import KANDINSKY_22_SCHEDULERS
 
 PRIOR_STEPS = 25

@@ -4,8 +4,8 @@ from diffusers import (
     KandinskyV22Pipeline,
     KandinskyV22PriorPipeline,
 )
-from src.shared.classes import Kandinsky22PipeObject
 from src.shared.device import DEVICE_CUDA
+from src.shared.pipe_classes import Kandinsky22PipeObject
 
 MODEL_NAME = "Kandinsky 2.2"
 MODEL_ID = "kandinsky-community/kandinsky-2-2-decoder"
