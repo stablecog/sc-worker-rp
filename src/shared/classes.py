@@ -13,9 +13,6 @@ def return_value_if_in_list(value: T, list_of_values: List[T]) -> T:
     return value
 
 
-print("test")
-
-
 T = TypeVar("T")
 
 
