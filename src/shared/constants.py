@@ -8,8 +8,6 @@ from enum import Enum
 WORKER_VERSION = "v1.04"
 SIZE_LIST = list(range(256, 1537, 8))
 
-print("test")
-
 
 class TabulateLevels(Enum):
     PRIMARY = "simple_grid"
