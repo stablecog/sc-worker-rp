@@ -11,6 +11,7 @@ from diffusers import (
     StableDiffusion3Pipeline,
     StableDiffusion3Img2ImgPipeline,
 )
+from aura_sr import AuraSR
 
 
 class StableDiffusionPipeObject:
@@ -54,3 +55,11 @@ class Flux1PipeObject:
         text2img: FluxPipeline,
     ):
         self.text2img = text2img
+
+
+class AuraSrPipeObject:
+    def __init__(
+        self,
+        pipe: AuraSR,
+    ):
+        self.pipe = pipe

@@ -10,9 +10,13 @@ from .classes import (
     GenerateFunctionProps,
     GenerateOutput,
     PredictionGenerateInput,
+    PredictionUpscaleInput,
     UploadObject,
+    UpscaleFunctionProps,
+    UpscaleOutput,
     predict_input_to_generate_input,
     GenerateFunctionProps,
+    predict_input_to_upscale_input,
 )
 
 T = TypeVar("T")
@@ -126,6 +130,102 @@ def create_predict_for_generate(
         logging.info(
             tabulate(
                 [[f"🔧 Process: Generate", f"🟢 {duration_ms}ms"]],
+                tablefmt=TabulateLevels.PRIMARY.value,
+            )
+        )
+
+        return response
+
+    return predict
+
+
+P = TypeVar("P")
+
+
+def create_predict_for_upscale(
+    model_name: str,
+    get_pipe_object: Callable[[bool], P],
+    upscale: Callable[[UpscaleFunctionProps[P]], List[UpscaleOutput]],
+):
+    class Model:
+        def __init__(self):
+            self.pipe_object: P = get_pipe_object(True)
+
+    MODEL = Model()
+
+    def predict(job):
+        job_input = job["input"]
+        validated_input: PredictionUpscaleInput | None = None
+
+        try:
+            validated_input = PredictionUpscaleInput(
+                **job_input,
+            )
+        except ValidationError as e:
+            logging.error(f"🔴 Validation error:", e.errors())
+            return {
+                "error": {
+                    "code": "validation_error",
+                    "message": e.json(),
+                },
+                "input": job_input,
+                "metadata": {
+                    "worker_version": WORKER_VERSION,
+                },
+            }
+
+        start_time = time.time()
+        logging.info(
+            tabulate(
+                [[f"🔧 Process: Upscale", f"🟡 Started"]],
+                tablefmt=TabulateLevels.PRIMARY.value,
+            )
+        )
+
+        upscale_input = predict_input_to_upscale_input(validated_input)
+        outputs = upscale(
+            UpscaleFunctionProps(
+                input=upscale_input,
+                pipe_object=MODEL.pipe_object,
+                model_name=model_name,
+                scale=validated_input.scale,
+            )
+        )
+
+        end_time = time.time()
+        duration_ms = round((end_time - start_time) * 1000)
+
+        upload_objects: List[UploadObject] = []
+        for i, output in enumerate(outputs):
+            upload_objects.append(
+                UploadObject(
+                    pil_image=output.image,
+                    signed_url=validated_input.signed_urls[i],
+                    target_extension=validated_input.output_image_extension,
+                    target_quality=validated_input.output_image_quality,
+                )
+            )
+        upload_results = upload_images(
+            upload_objects=upload_objects,
+        )
+
+        response = {
+            "output": {
+                "images": [],
+            },
+            "input": job_input,
+            "metadata": {
+                "worker_version": WORKER_VERSION,
+            },
+        }
+        for upload_result in upload_results:
+            response["output"]["images"].append(upload_result.image_url)
+
+        end_time = time.time()
+        duration_ms = round((end_time - start_time) * 1000)
+        logging.info(
+            tabulate(
+                [[f"🔧 Process: Upscale", f"🟢 {duration_ms}ms"]],
                 tablefmt=TabulateLevels.PRIMARY.value,
             )
         )

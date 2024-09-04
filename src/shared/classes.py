@@ -1,4 +1,5 @@
 from typing import Any, Dict, Generic, List, Optional, TypeVar
+from urllib.parse import urlparse
 from pydantic import BaseModel, Field, validator
 
 from PIL import Image
@@ -106,7 +107,10 @@ class PredictionGenerateInput(BaseModel):
         default="jpeg",
     )
     output_image_quality: int = Field(
-        description="Output quality of the image. Can be 1-100.", default=90
+        description="Output quality of the image. Can be 1-100.",
+        default=85,
+        ge=1,
+        le=100,
     )
     width: int = Field(
         description="Width of output image.",
@@ -238,3 +242,107 @@ class GenerateFunctionProps(Generic[P]):
         self.default_prompt_prefix = default_prompt_prefix
         self.default_negative_prompt_prefix = default_negative_prompt_prefix
         self.dont_set_scheduler = dont_set_scheduler
+
+
+def is_url(string: str) -> bool:
+    try:
+        result = urlparse(string)
+        return all([result.scheme, result.netloc])
+    except ValueError:
+        return False
+
+
+class UpscaleInput:
+    def __init__(
+        self,
+        images: List[str],
+        scale: int = 4,
+    ):
+        self.images = images
+        self.scale = scale
+
+
+U = TypeVar("U")
+
+
+class UpscaleFunctionProps(Generic[U]):
+    def __init__(
+        self,
+        input: UpscaleInput,
+        pipe_object: U,
+        model_name: str,
+        scale: int,
+    ):
+        self.input = input
+        self.pipe_object = pipe_object
+        self.model_name = model_name
+        self.scale = scale
+
+
+class PredictionUpscaleInput(BaseModel):
+    images: List[str] = Field(
+        description="Image URLs to be upscaled.",
+    )
+    scale: int = Field(
+        description="Upscale factor.",
+        ge=1,
+        le=4,
+        default=4,
+    )
+    output_image_extension: str = Field(
+        description="Output type of the image. Can be 'png' or 'jpeg' or 'webp'.",
+        default="jpeg",
+    )
+    output_image_quality: int = Field(
+        description="Output quality of the image. Can be 1-100.",
+        default=85,
+        ge=1,
+        le=100,
+    )
+    signed_urls: List[str] = Field(
+        description="List of signed URLs for images to be uploaded to."
+    )
+    metadata: Optional[Dict[str, Any]] = Field(
+        description="Optional metadata to be returned with the response.", default=None
+    )
+
+    @validator("output_image_extension")
+    def validate_output_image_extension(cls, v):
+        if v not in ["png", "jpeg", "webp"]:
+            raise ValueError(
+                f'Invalid output_image_extension: "{v}". Must be one of ["png", "jpeg", "webp"].'
+            )
+        return v
+
+    @validator("images")
+    def validate_image_urls(cls, v):
+        for url in v:
+            parsed_url = urlparse(url)
+            if not all([parsed_url.scheme, parsed_url.netloc]):
+                raise ValueError(f"Invalid URL: {url}")
+            if parsed_url.scheme not in ["http", "https"]:
+                raise ValueError(f"URL must use http or https scheme: {url}")
+        return v
+
+    @validator("signed_urls")
+    def validate_signed_urls(cls, v, values):
+        images = values.get("images", [])
+        if not isinstance(v, list) or len(v) < len(images):
+            raise ValueError(
+                "signed_urls must be a list with at least as many elements as images."
+            )
+        return v
+
+
+class UpscaleOutput:
+    def __init__(self, image: Image.Image):
+        self.image = image
+
+
+def predict_input_to_upscale_input(
+    input: PredictionUpscaleInput,
+) -> UpscaleInput:
+    return UpscaleInput(
+        images=input.images,
+        scale=input.scale,
+    )
