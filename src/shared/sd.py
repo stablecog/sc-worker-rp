@@ -90,8 +90,10 @@ def generate(
     if pipe_object.refiner is not None:
         extra_kwargs["output_type"] = "latent"
 
-    if input.init_image_url is not None and (
-        pipe_object.img2img is not None or pipe_object.inpaint is not None
+    if (input.init_image_url is not None and pipe_object.img2img is not None) or (
+        input.init_image_url is not None
+        and input.mask_image_url is not None
+        and pipe_object.inpaint is not None
     ):
         start_i = time.time()
         extra_kwargs["image"] = download_and_fit_image(
