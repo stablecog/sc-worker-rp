@@ -188,7 +188,6 @@ def create_predict_for_upscale(
                 input=upscale_input,
                 pipe_object=MODEL.pipe_object,
                 model_name=model_name,
-                scale=validated_input.scale,
             )
         )
 

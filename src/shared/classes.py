@@ -271,12 +271,10 @@ class UpscaleFunctionProps(Generic[U]):
         input: UpscaleInput,
         pipe_object: U,
         model_name: str,
-        scale: int,
     ):
         self.input = input
         self.pipe_object = pipe_object
         self.model_name = model_name
-        self.scale = scale
 
 
 class PredictionUpscaleInput(BaseModel):
