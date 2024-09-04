@@ -248,7 +248,7 @@ class UpscaleInput:
     def __init__(
         self,
         images: List[str],
-        scale: int = 4,
+        scale: int,
     ):
         self.images = images
         self.scale = scale
