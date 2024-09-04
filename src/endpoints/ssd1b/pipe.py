@@ -18,7 +18,6 @@ def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject:
         safety_checker=None,
         variant=VARIANT,
     )
-    print("test")
 
     img2img = None
     if to_cuda:
