@@ -32,6 +32,7 @@ def create_predict_for_generate(
         def __init__(self):
             self.pipe_object: T = get_pipe_object(True)
 
+    print("test")
     MODEL = Model()
 
     def predict(job):
