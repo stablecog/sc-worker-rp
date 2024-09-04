@@ -20,10 +20,13 @@ ENV HF_DATASETS_CACHE=/app/hf_cache
 ENV HF_HOME=/app/hf_cache
 
 # Copy the src folder
-COPY src /app/src
+COPY src/shared/__init__.py /app/src/shared/__init__.py
+COPY src/shared/constants /app/src/shared/constants
+COPY src/shared/classes /app/src/shared/classes
+COPY src/endpoints/${MODEL_FOLDER} /app/src/endpoints/${MODEL_FOLDER}
 
 # Download the models
-RUN python3 -c "import os; import importlib; MODEL_FOLDER = os.environ['MODEL_FOLDER']; pipe = importlib.import_module(f'src.endpoints.{MODEL_FOLDER}.pipe'); pipe.get_pipe_object(to_cuda=False)"
+RUN python3 -m src.endpoints.${MODEL_FOLDER}.pipe
 
 # Delete src so that even if it changes, layer hash stays the same
 RUN rm -rf /app/src
