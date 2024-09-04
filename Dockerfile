@@ -23,7 +23,8 @@ ENV HF_HOME=/app/hf_cache
 COPY src/shared/__init__.py /app/src/shared/__init__.py
 COPY src/shared/constants /app/src/shared/constants
 COPY src/shared/classes /app/src/shared/classes
-COPY src/endpoints/${MODEL_FOLDER} /app/src/endpoints/${MODEL_FOLDER}
+COPY src/endpoints/${MODEL_FOLDER}/__init__.py /app/src/endpoints/${MODEL_FOLDER}/__init__.py
+COPY src/endpoints/${MODEL_FOLDER}/pipe /app/src/endpoints/${MODEL_FOLDER}/pipe
 
 # Download the models
 RUN python3 -m src.endpoints.${MODEL_FOLDER}.pipe
