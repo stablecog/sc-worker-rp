@@ -52,6 +52,8 @@ jobs:
 
       - name: Build and push
         uses: docker/build-push-action@v6
+        env:
+          HF_LOGIN: ${{ secrets.HF_LOGIN }}
         with:
           context: .
           file: ./Dockerfile

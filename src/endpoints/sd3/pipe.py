@@ -1,6 +1,7 @@
 import torch
 from typing import cast
 from diffusers import StableDiffusion3Pipeline, StableDiffusion3Img2ImgPipeline
+from src.shared.hf_login import login_to_hf
 from src.shared.pipe_classes import StableDiffusionPipeObject
 from src.shared.device import DEVICE_CUDA
 
@@ -9,6 +10,7 @@ MODEL_ID = "stabilityai/stable-diffusion-3-medium-diffusers"
 
 
 def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject:
+    login_to_hf()
     text2img = StableDiffusion3Pipeline.from_pretrained(
         MODEL_ID,
         torch_dtype=torch.float16,
