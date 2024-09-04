@@ -18,6 +18,7 @@ from src.shared.helpers import (
     crop_images,
     download_and_fit_image,
     download_and_fit_image_mask,
+    log_gpu_memory,
     pad_image_mask_nd,
     pad_image_pil,
 )
@@ -55,6 +56,8 @@ def generate(
     # ---------------------------------------------------------------------
 
     inference_start = time.time()
+    log_gpu_memory(message="Before inference")
+
     prompt = input.prompt
     negative_prompt = input.negative_prompt
     seed = input.seed
@@ -233,6 +236,7 @@ def generate(
     logging.info(
         f"🔮 🟢 Inference | {model_name} | {input.num_outputs} image(s) | {round((inference_end - inference_start) * 1000)}ms"
     )
+    log_gpu_memory(message="After inference")
 
     outputs: List[GenerateOutput] = []
 

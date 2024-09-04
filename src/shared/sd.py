@@ -43,11 +43,11 @@ def generate(
     # ---------------------------------------------------------------------
 
     inference_start = time.time()
+    log_gpu_memory(message="Before inference")
+
     prompt = input.prompt
     negative_prompt = input.negative_prompt
     seed = input.seed
-
-    inference_start = time.time()
 
     if seed is None:
         seed = int.from_bytes(os.urandom(3), "big")
