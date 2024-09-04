@@ -18,7 +18,7 @@ from src.shared.classes import (
     GenerateOutput,
     StableDiffusionPipeObject,
 )
-from src.shared.constants import DEVICE_CUDA
+from src.shared.device import DEVICE_CUDA
 from src.shared.helpers import (
     download_and_fit_image,
     log_gpu_memory,

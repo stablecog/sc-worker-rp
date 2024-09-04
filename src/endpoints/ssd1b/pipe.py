@@ -1,8 +1,8 @@
 import torch
 from typing import cast
 from diffusers import StableDiffusionXLPipeline, StableDiffusionXLImg2ImgPipeline
-from src.shared.constants import DEVICE_CUDA
-from src.shared.classes import StableDiffusionPipeObject
+from src.shared.device import DEVICE_CUDA
+from src.shared.pipe_classes import StableDiffusionPipeObject
 
 MODEL_NAME = "SSD-1B"
 MODEL_ID = "segmind/SSD-1B"

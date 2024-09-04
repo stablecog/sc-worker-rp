@@ -5,7 +5,6 @@ load_dotenv()
 from enum import Enum
 
 
-DEVICE_CUDA = "cuda"
 WORKER_VERSION = "v1.04"
 SIZE_LIST = list(range(256, 1537, 8))
 

@@ -14,7 +14,7 @@ from src.shared.classes import (
     GenerateOutput,
     Kandinsky22PipeObject,
 )
-from src.shared.constants import DEVICE_CUDA
+from src.shared.device import DEVICE_CUDA
 from src.shared.helpers import (
     crop_images,
     download_and_fit_image,
