@@ -112,7 +112,7 @@ def generate(
             f"-- Downloaded and cropped init image in: {round((end_i - start_i) * 1000)}ms"
         )
 
-        if pipe_object.inpaint is not None and input.mask_image_url is not None:
+        if input.mask_image_url is not None:
             # The process is: inpainting
             pipe_selected = cast(StableDiffusionInpaintPipeline, pipe_object.inpaint)
             start_i = time.time()
@@ -126,7 +126,7 @@ def generate(
             logging.info(
                 f"-- Downloaded and cropped mask image in: {round((end_i - start_i) * 1000)}ms"
             )
-        elif pipe_object.img2img is not None:
+        else:
             # The process is: img2img
             pipe_selected = pipe_object.img2img
     else:
