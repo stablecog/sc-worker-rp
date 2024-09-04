@@ -244,14 +244,6 @@ class GenerateFunctionProps(Generic[P]):
         self.dont_set_scheduler = dont_set_scheduler
 
 
-def is_url(string: str) -> bool:
-    try:
-        result = urlparse(string)
-        return all([result.scheme, result.netloc])
-    except ValueError:
-        return False
-
-
 class UpscaleInput:
     def __init__(
         self,
