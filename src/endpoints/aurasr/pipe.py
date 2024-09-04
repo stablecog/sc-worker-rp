@@ -1,3 +1,5 @@
+import logging
+import os
 from src.shared.pipe_classes import AuraSrPipeObject
 from aura_sr import AuraSR
 
@@ -12,4 +14,8 @@ def get_pipe_object(to_cuda: bool = True) -> AuraSrPipeObject:
 
 
 if __name__ == "__main__":
-    get_pipe_object(to_cuda=False)
+    """ get_pipe_object(to_cuda=False) """
+    logging.info("🔵 Skip downloading model")
+    folder = os.environ.get("HF_DATASETS_CACHE", None)
+    if folder is not None:
+        os.makedirs(folder, exist_ok=True)
