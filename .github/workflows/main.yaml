@@ -7,7 +7,7 @@ on:
 
 jobs:
   prepare:
-    runs-on: warp-ubuntu-latest-x64-2x
+    runs-on: ubicloud-standard-2
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       release_version: ${{ steps.get-release-version.outputs.release_version }}
@@ -24,7 +24,7 @@ jobs:
 
   build-and-push:
     needs: prepare
-    runs-on: warp-ubuntu-latest-x64-2x
+    runs-on: ubicloud-standard-2
     strategy:
       matrix:
         model: ${{fromJson(needs.prepare.outputs.matrix)}}
