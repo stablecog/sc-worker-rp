@@ -74,6 +74,8 @@ def create_predict_for_generate(
             )
         )
 
+        print("test")
+
         generate_input = predict_input_to_generate_input(validated_input)
         outputs = generate(
             GenerateFunctionProps(
