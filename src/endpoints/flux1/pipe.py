@@ -9,7 +9,7 @@ MODEL_ID = "black-forest-labs/FLUX.1-schnell"
 
 
 def get_pipe_object(to_cuda: bool = True) -> Flux1PipeObject:
-    device = torch.device(DEVICE_META) if to_cuda is False else None
+    device = DEVICE_META if to_cuda is False else None
     text2img = FluxPipeline.from_pretrained(
         MODEL_ID,
         torch_dtype=torch.bfloat16,
