@@ -5,13 +5,13 @@ from typing import Any, List, cast
 import torch
 import time
 from diffusers import (
-    StableDiffusionImg2ImgPipeline,
-    StableDiffusionXLImg2ImgPipeline,
     StableDiffusionPipeline,
     StableDiffusionImg2ImgPipeline,
     StableDiffusionInpaintPipeline,
-    StableDiffusion3Pipeline,
     StableDiffusionXLPipeline,
+    StableDiffusionXLImg2ImgPipeline,
+    StableDiffusion3Pipeline,
+    StableDiffusion3Img2ImgPipeline,
 )
 from src.shared.classes import (
     GenerateFunctionProps,
@@ -33,7 +33,7 @@ def get_scheduler(name, config):
 def generate(
     props: GenerateFunctionProps[StableDiffusionPipeObject],
 ) -> List[GenerateOutput]:
-    # Props
+    # Props ---------------------------------------------------------------
     input = props.input
     pipe_object = props.pipe_object
     model_name = props.model_name
@@ -83,6 +83,7 @@ def generate(
         | StableDiffusionXLImg2ImgPipeline
         | StableDiffusionInpaintPipeline
         | StableDiffusion3Pipeline
+        | StableDiffusion3Img2ImgPipeline
         | None
     ) = None
 

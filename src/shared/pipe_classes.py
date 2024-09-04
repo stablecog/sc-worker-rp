@@ -9,6 +9,7 @@ from diffusers import (
     StableDiffusionXLPipeline,
     FluxPipeline,
     StableDiffusion3Pipeline,
+    StableDiffusion3Img2ImgPipeline,
 )
 
 
@@ -21,7 +22,10 @@ class StableDiffusionPipeObject:
             | StableDiffusion3Pipeline
         ),
         img2img: (
-            StableDiffusionImg2ImgPipeline | StableDiffusionXLImg2ImgPipeline | None
+            StableDiffusionImg2ImgPipeline
+            | StableDiffusionXLImg2ImgPipeline
+            | StableDiffusion3Img2ImgPipeline
+            | None
         ),
         inpaint: StableDiffusionInpaintPipeline | None = None,
         refiner: StableDiffusionXLImg2ImgPipeline | None = None,
