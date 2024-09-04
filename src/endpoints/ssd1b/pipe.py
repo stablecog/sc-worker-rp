@@ -41,8 +41,8 @@ def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject:
 
     return StableDiffusionPipeObject(
         text2img=cast(StableDiffusionXLPipeline, text2img),
-        img2img=cast(StableDiffusionXLImg2ImgPipeline, img2img),
-        refiner=cast(StableDiffusionXLImg2ImgPipeline, refiner),
+        img2img=img2img,
+        refiner=refiner,
     )
 
 

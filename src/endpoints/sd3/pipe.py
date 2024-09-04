@@ -24,14 +24,14 @@ def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject:
     img2img = None
     if to_cuda:
         text2img = text2img.to(DEVICE_CUDA)
-        img2img = StableDiffusion3Pipeline(**text2img.components)
+        img2img = StableDiffusion3Img2ImgPipeline(**text2img.components)
     else:
         del text2img
         text2img = None
 
     return StableDiffusionPipeObject(
         text2img=cast(StableDiffusion3Pipeline, text2img),
-        img2img=cast(StableDiffusion3Img2ImgPipeline, img2img),
+        img2img=img2img,
     )
 
 
