@@ -16,13 +16,13 @@ from diffusers import (
 from src.shared.classes import (
     GenerateFunctionProps,
     GenerateOutput,
-    StableDiffusionPipeObject,
 )
 from src.shared.device import DEVICE_CUDA
 from src.shared.helpers import (
     download_and_fit_image,
     log_gpu_memory,
 )
+from src.shared.pipe_classes import StableDiffusionPipeObject
 from src.shared.schedulers import SD_SCHEDULERS
 
 
