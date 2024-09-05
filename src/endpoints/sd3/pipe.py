@@ -6,19 +6,17 @@ from src.shared.pipe_classes import StableDiffusionPipeObject
 from src.shared.device import DEVICE_CUDA
 
 MODEL_NAME = "Stable Diffusion 3"
-MODEL_ID = "stabilityai/stable-diffusion-3-medium-diffusers"
+MODEL_FILE = "https://huggingface.co/stabilityai/stable-diffusion-3-medium/blob/main/sd3_medium_incl_clips_t5xxlfp8.safetensors"
 
 
 def get_pipe_object(to_cuda: bool = True) -> StableDiffusionPipeObject:
     login_to_hf()
 
-    text2img = StableDiffusion3Pipeline.from_pretrained(
-        MODEL_ID,
+    text2img = StableDiffusion3Pipeline.from_single_file(
+        MODEL_FILE,
         torch_dtype=torch.float16,
         add_watermark=False,
         safety_checker=None,
-        text_encoder_3=None,
-        tokenizer_3=None,
     )
 
     img2img = None
