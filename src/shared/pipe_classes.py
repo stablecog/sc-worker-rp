@@ -11,7 +11,7 @@ from diffusers import (
     StableDiffusion3Pipeline,
     StableDiffusion3Img2ImgPipeline,
 )
-from src.shared.aura_sr import AuraSR
+from .aura_sr import AuraSR
 
 
 class StableDiffusionPipeObject:
