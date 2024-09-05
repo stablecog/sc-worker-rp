@@ -23,6 +23,7 @@ ENV HF_HOME=/app/hf_cache
 COPY src/shared/__init__.py /app/src/shared/__init__.py
 COPY src/shared/device.py /app/src/shared/device.py
 COPY src/shared/pipe_classes.py /app/src/shared/pipe_classes.py
+COPY src/shared/aura_sr.py /app/src/shared/aura_sr.py
 COPY src/shared/hf_login.py /app/src/shared/hf_login.py
 COPY src/endpoints/${MODEL_FOLDER}/__init__.py /app/src/endpoints/${MODEL_FOLDER}/__init__.py
 COPY src/endpoints/${MODEL_FOLDER}/pipe.py /app/src/endpoints/${MODEL_FOLDER}/pipe.py
