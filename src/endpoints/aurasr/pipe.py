@@ -1,8 +1,6 @@
-import logging
-import os
-import torch
+from src.shared.device import DEVICE_CPU, DEVICE_CUDA
 from src.shared.pipe_classes import AuraSrPipeObject
-from aura_sr import AuraSR
+from src.shared.aura_sr import AuraSR
 
 
 MODEL_NAME = "AuraSR"
@@ -10,15 +8,10 @@ MODEL_ID = "fal/AuraSR-v2"
 
 
 def get_pipe_object(to_cuda: bool = True) -> AuraSrPipeObject:
-    pipe = AuraSR.from_pretrained(MODEL_ID)
+    device = DEVICE_CUDA if to_cuda else DEVICE_CPU
+    pipe = AuraSR.from_pretrained(MODEL_ID, device=device)
     return AuraSrPipeObject(pipe=pipe)
 
 
 if __name__ == "__main__":
-    if torch.cuda.is_available():
-        get_pipe_object(to_cuda=False)
-    else:
-        logging.info("🔵 Skip downloading model")
-        folder = os.environ.get("HF_DATASETS_CACHE", None)
-        if folder is not None:
-            os.makedirs(folder, exist_ok=True)
+    get_pipe_object(to_cuda=False)
