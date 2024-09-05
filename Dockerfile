@@ -4,6 +4,9 @@ FROM stablecog/cuda-torch:12.1.0-2.1.0-cudnn8-devel-ubuntu22.04 AS base
 # Set working directory
 WORKDIR /app
 
+# Install git
+RUN apt-get update && apt-get install -y git
+
 # Install dependencies
 COPY requirements.txt .
 RUN python3 -m pip install --upgrade pip && \
