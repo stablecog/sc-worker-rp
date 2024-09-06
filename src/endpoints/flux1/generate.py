@@ -9,6 +9,8 @@ from src.shared.helpers import log_gpu_memory
 from src.shared.pipe_classes import Flux1PipeObject
 import time
 
+MAX_INFERENCE_STEPS = 4
+
 
 def generate(
     props: GenerateFunctionProps[Flux1PipeObject],
@@ -44,7 +46,7 @@ def generate(
                 generator=generator,
                 guidance_scale=0,
                 num_images_per_prompt=1,
-                num_inference_steps=4,
+                num_inference_steps=min(input.num_inference_steps, MAX_INFERENCE_STEPS),
                 width=input.width,
                 height=input.height,
             ),
