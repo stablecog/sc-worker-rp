@@ -1,5 +1,5 @@
 ### STAGE 1: Base image with CUDA and PyTorch
-FROM stablecog/cuda-torch:12.1.0-2.1.0-cudnn8-devel-ubuntu22.04 AS base
+FROM stb.sh/cuda-torch:12.1.0-2.1.0-cudnn8-devel-ubuntu22.04 AS base
 
 # Set working directory
 WORKDIR /app
