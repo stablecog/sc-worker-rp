@@ -1,7 +1,7 @@
 ARG MODEL_FOLDER
 
 # STAGE 1: Base image with CUDA, PyTorch, and the model weights
-FROM stablecog/model-${MODEL_FOLDER} AS base
+FROM stb.sh/s/stablecog/model-${MODEL_FOLDER} AS base
 # Set working directory
 WORKDIR /app
 
