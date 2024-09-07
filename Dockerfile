@@ -9,7 +9,6 @@ WORKDIR /app
 FROM base AS final
 
 ENV MODEL_FOLDER=${MODEL_FOLDER}
-
 ENV HF_DATASETS_CACHE=/app/hf_cache
 ENV HF_HOME=/app/hf_cache
 
