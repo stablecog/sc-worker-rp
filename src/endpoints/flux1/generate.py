@@ -15,11 +15,11 @@ MAX_INFERENCE_STEPS = 4
 def generate(
     props: GenerateFunctionProps[Flux1PipeObject],
 ) -> List[GenerateOutput]:
-    # Props
+    # Props --------------------------------------
     input = props.input
     pipe_object = props.pipe_object
     model_name = props.model_name
-    # ---------------------------------------------------------------------
+    # --------------------------------------------
 
     inference_start = time.time()
     log_gpu_memory(message="Before inference")
