@@ -21,6 +21,8 @@ RUN --mount=type=secret,id=HF_TOKEN \
   HF_TOKEN=$(cat /run/secrets/HF_TOKEN) \
   python3 -m src.endpoints.${MODEL_FOLDER}.pipe
 
+COPY /app/hf_cache /app/hf_cache
+
 COPY src /app/src
 
 CMD python3 -m src.endpoints.${MODEL_FOLDER}.handler
