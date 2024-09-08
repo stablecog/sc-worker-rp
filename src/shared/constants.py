@@ -5,7 +5,7 @@ load_dotenv()
 from enum import Enum
 
 
-WORKER_VERSION = "v1.09"
+WORKER_VERSION = "v1.10"
 SIZE_LIST = list(range(256, 1537, 8))
 
 

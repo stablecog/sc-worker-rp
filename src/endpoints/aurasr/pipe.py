@@ -1,6 +1,6 @@
 from src.shared.device import DEVICE_CPU, DEVICE_CUDA
 from src.shared.pipe_classes import AuraSrPipeObject
-from aura_sr import AuraSR
+from src.shared.aura_sr import AuraSR
 
 
 MODEL_NAME = "AuraSR"
