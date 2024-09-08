@@ -33,14 +33,14 @@ def get_scheduler(name, config):
 def generate(
     props: GenerateFunctionProps[StableDiffusionPipeObject],
 ) -> List[GenerateOutput]:
-    # Props ----------------------------------------------------------------
+    # Props -----------------------------------------------------------------
     input = props.input
     pipe_object = props.pipe_object
     model_name = props.model_name
     default_prompt_prefix = props.default_prompt_prefix
     default_negative_prompt_prefix = props.default_negative_prompt_prefix
     dont_set_scheduler = props.dont_set_scheduler
-    # ----------------------------------------------------------------------
+    # -----------------------------------------------------------------------
 
     inference_start = time.time()
     log_gpu_memory(message="Before inference")
