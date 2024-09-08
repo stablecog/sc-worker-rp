@@ -21,8 +21,8 @@ RUN --mount=type=secret,id=HF_TOKEN \
   HF_TOKEN=$(cat /run/secrets/HF_TOKEN) \
   python3 -m src.endpoints.${MODEL_FOLDER}.pipe
 
-# print everything in the container
-RUN ls -R /app
+# This is to create a new layer with the model files
+COPY src/__init__.py /app/src/__init__.py
 
 COPY src /app/src
 
