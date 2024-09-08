@@ -7,9 +7,7 @@ ENV HF_DATASETS_CACHE=/app/hf_cache
 ENV HF_HOME=/app/hf_cache
 
 COPY requirements.txt .
-RUN python3 -m pip install --upgrade pip && \
-  python3 -m pip install --ignore-installed --upgrade -r requirements.txt --no-cache-dir
-
+RUN python3 -m pip install -r requirements.txt
 COPY src/shared/__init__.py /app/src/shared/__init__.py
 COPY src/shared/device.py /app/src/shared/device.py
 COPY src/shared/pipe_classes.py /app/src/shared/pipe_classes.py
