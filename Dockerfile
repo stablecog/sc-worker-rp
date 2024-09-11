@@ -18,38 +18,33 @@ COPY src/shared/aura_sr.py /app/src/shared/aura_sr.py
 COPY src/endpoints/${MODEL_FOLDER}/__init__.py /app/src/endpoints/${MODEL_FOLDER}/__init__.py
 COPY src/endpoints/${MODEL_FOLDER}/pipe.py /app/src/endpoints/${MODEL_FOLDER}/pipe.py
 
-# Download model files and prepare for separation
+# Download model files and prepare for distribution
 RUN --mount=type=secret,id=HF_TOKEN \
   HF_TOKEN=$(cat /run/secrets/HF_TOKEN) \
   python3 -m src.endpoints.${MODEL_FOLDER}.pipe && \
-  find /app/hf_cache -type f -size +5G | awk '{print $0, int(rand()*10)}' > /app/large_files.txt && \
+  mkdir -p /app/hf_cache/small_files && \
   for i in {0..9}; do mkdir -p /app/hf_cache/large_files_$i; done && \
-  mkdir -p /app/hf_cache/small_files
-
-# Separate large files into different directories based on random number
-# Move small files to a separate directory
-RUN while read file number; do \
-  mv "$file" /app/hf_cache/large_files_$((number % 10))/; \
-  done < /app/large_files.txt && \
+  find /app/hf_cache -type f -size +5G | awk '{print $0, int(NR%10)}' | \
+  while read file number; do mv "$file" /app/hf_cache/large_files_$number/; done && \
   find /app/hf_cache -type f -size -5G -exec mv {} /app/hf_cache/small_files/ \;
 
 # Final stage
 FROM base AS final
 
 # Copy small files first
-COPY --from=base /app/hf_cache/small_files /app/hf_cache/small_files
+COPY --from=base /app/hf_cache/small_files /app/hf_cache/
 
-# Copy large files in separate layers without overwriting
-COPY --from=base /app/hf_cache/large_files_0 /app/hf_cache/large_files_0
-COPY --from=base /app/hf_cache/large_files_1 /app/hf_cache/large_files_1
-COPY --from=base /app/hf_cache/large_files_2 /app/hf_cache/large_files_2
-COPY --from=base /app/hf_cache/large_files_3 /app/hf_cache/large_files_3
-COPY --from=base /app/hf_cache/large_files_4 /app/hf_cache/large_files_4
-COPY --from=base /app/hf_cache/large_files_5 /app/hf_cache/large_files_5
-COPY --from=base /app/hf_cache/large_files_6 /app/hf_cache/large_files_6
-COPY --from=base /app/hf_cache/large_files_7 /app/hf_cache/large_files_7
-COPY --from=base /app/hf_cache/large_files_8 /app/hf_cache/large_files_8
-COPY --from=base /app/hf_cache/large_files_9 /app/hf_cache/large_files_9
+# Copy large files in separate layers
+COPY --from=base /app/hf_cache/large_files_0 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_1 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_2 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_3 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_4 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_5 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_6 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_7 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_8 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_9 /app/hf_cache/
 
 # Copy the rest of the application code
 COPY src/__init__.py /app/src/__init__.py
