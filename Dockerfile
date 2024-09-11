@@ -31,25 +31,28 @@ RUN --mount=type=secret,id=HF_TOKEN \
   mkdir -p "$dir"; \
   mv "$file" "$dir/"; \
   done && \
-  find /app/hf_cache -type f -size -5G -exec mv {} /app/hf_cache/small_files/ \;
+  find /app/hf_cache -type f -size -5G -exec mv {} /app/hf_cache/small_files/ \; && \
+  # Create temporary files in each directory to ensure they're not empty
+  touch /app/hf_cache/small_files/.keep && \
+  for i in {0..9}; do touch /app/hf_cache/large_files_$i/.keep; done
 
 # Final stage
 FROM base AS final
 
 # Copy small files first
-COPY --from=base /app/hf_cache/small_files /app/hf_cache/ || true
+COPY --from=base /app/hf_cache/small_files /app/hf_cache/
 
 # Copy large files in separate layers
-COPY --from=base /app/hf_cache/large_files_0 /app/hf_cache/ || true
-COPY --from=base /app/hf_cache/large_files_1 /app/hf_cache/ || true
-COPY --from=base /app/hf_cache/large_files_2 /app/hf_cache/ || true
-COPY --from=base /app/hf_cache/large_files_3 /app/hf_cache/ || true
-COPY --from=base /app/hf_cache/large_files_4 /app/hf_cache/ || true
-COPY --from=base /app/hf_cache/large_files_5 /app/hf_cache/ || true
-COPY --from=base /app/hf_cache/large_files_6 /app/hf_cache/ || true
-COPY --from=base /app/hf_cache/large_files_7 /app/hf_cache/ || true
-COPY --from=base /app/hf_cache/large_files_8 /app/hf_cache/ || true
-COPY --from=base /app/hf_cache/large_files_9 /app/hf_cache/ || true
+COPY --from=base /app/hf_cache/large_files_0 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_1 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_2 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_3 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_4 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_5 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_6 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_7 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_8 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_9 /app/hf_cache/
 
 # Copy the rest of the application code
 COPY src/__init__.py /app/src/__init__.py
