@@ -1,5 +1,5 @@
 # Base stage
-FROM stablecog/cuda-torch:12.1.0-2.1.0-cudnn8-devel-ubuntu22.04 AS base
+FROM stb.sh/stablecog/cuda-torch:12.1.0-2.1.0-cudnn8-devel-ubuntu22.04 AS base
 
 WORKDIR /app
 ARG MODEL_FOLDER
@@ -22,35 +22,37 @@ COPY src/endpoints/${MODEL_FOLDER}/pipe.py /app/src/endpoints/${MODEL_FOLDER}/pi
 RUN --mount=type=secret,id=HF_TOKEN \
   HF_TOKEN=$(cat /run/secrets/HF_TOKEN) \
   python3 -m src.endpoints.${MODEL_FOLDER}.pipe && \
-  find /app/hf_cache -type f -size +5G | sort | awk 'BEGIN {srand(1)} {print $0, int(rand()*10)}' > /app/large_files.txt && \
-  for i in {0..9}; do mkdir -p /app/large_files_$i; done
+  find /app/hf_cache -type f -size +5G | awk '{print $0, int(rand()*10)}' > /app/large_files.txt && \
+  for i in {0..9}; do mkdir -p /app/hf_cache/large_files_$i; done && \
+  mkdir -p /app/hf_cache/small_files
 
-# Separate large files into different directories based on seeded random number
+# Separate large files into different directories based on random number
+# Move small files to a separate directory
 RUN while read file number; do \
-  mv "$file" /app/large_files_$((number % 10))/; \
-  done < /app/large_files.txt
+  mv "$file" /app/hf_cache/large_files_$((number % 10))/; \
+  done < /app/large_files.txt && \
+  find /app/hf_cache -type f -size -5G -exec mv {} /app/hf_cache/small_files/ \;
 
 # Final stage
 FROM base AS final
 
-# Copy small files
-COPY --from=base /app/hf_cache /app/hf_cache
+# Copy small files first
+COPY --from=base /app/hf_cache/small_files /app/hf_cache/small_files
 
-# Copy large files in separate layers
-COPY --from=base /app/large_files_0 /app/hf_cache
-COPY --from=base /app/large_files_1 /app/hf_cache
-COPY --from=base /app/large_files_2 /app/hf_cache
-COPY --from=base /app/large_files_3 /app/hf_cache
-COPY --from=base /app/large_files_4 /app/hf_cache
-COPY --from=base /app/large_files_5 /app/hf_cache
-COPY --from=base /app/large_files_6 /app/hf_cache
-COPY --from=base /app/large_files_7 /app/hf_cache
-COPY --from=base /app/large_files_8 /app/hf_cache
-COPY --from=base /app/large_files_9 /app/hf_cache
+# Copy large files in separate layers without overwriting
+COPY --from=base /app/hf_cache/large_files_0 /app/hf_cache/large_files_0
+COPY --from=base /app/hf_cache/large_files_1 /app/hf_cache/large_files_1
+COPY --from=base /app/hf_cache/large_files_2 /app/hf_cache/large_files_2
+COPY --from=base /app/hf_cache/large_files_3 /app/hf_cache/large_files_3
+COPY --from=base /app/hf_cache/large_files_4 /app/hf_cache/large_files_4
+COPY --from=base /app/hf_cache/large_files_5 /app/hf_cache/large_files_5
+COPY --from=base /app/hf_cache/large_files_6 /app/hf_cache/large_files_6
+COPY --from=base /app/hf_cache/large_files_7 /app/hf_cache/large_files_7
+COPY --from=base /app/hf_cache/large_files_8 /app/hf_cache/large_files_8
+COPY --from=base /app/hf_cache/large_files_9 /app/hf_cache/large_files_9
 
 # Copy the rest of the application code
 COPY src/__init__.py /app/src/__init__.py
 COPY src /app/src
 
-# Run the application
 CMD python3 -m src.endpoints.${MODEL_FOLDER}.handler
