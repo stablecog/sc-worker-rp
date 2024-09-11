@@ -1,4 +1,4 @@
-FROM stb.sh/stablecog/cuda-torch:12.1.0-2.1.0-cudnn8-devel-ubuntu22.04 AS base
+FROM stablecog/cuda-torch:12.1.0-2.1.0-cudnn8-devel-ubuntu22.04 AS base
 
 WORKDIR /app
 ARG MODEL_FOLDER
@@ -21,9 +21,34 @@ RUN --mount=type=secret,id=HF_TOKEN \
   HF_TOKEN=$(cat /run/secrets/HF_TOKEN) \
   python3 -m src.endpoints.${MODEL_FOLDER}.pipe
 
-# This is to create a new layer with the model files before copying the rest of the code
-COPY src/__init__.py /app/src/__init__.py
+# Ensure directory structure is preserved, add keep.txt to empty directories
+RUN find /app/hf_cache -type d -empty -exec touch {}/keep.txt \;
 
+# Split large files and small files into separate folders, preserving deep file structure
+RUN mkdir -p /app/hf_cache_large /app/hf_cache_small \
+  && find /app/hf_cache -type f -size +5G -exec cp --parents {} /app/hf_cache_large/ \; \
+  && find /app/hf_cache -type f -size -5G -exec cp --parents {} /app/hf_cache_small/ \;
+
+# Distribute large files across 10 COPY layers
+COPY /app/hf_cache_large/ /app/hf_cache/ 
+COPY /app/hf_cache_large/ /app/hf_cache/ 
+COPY /app/hf_cache_large/ /app/hf_cache/ 
+COPY /app/hf_cache_large/ /app/hf_cache/ 
+COPY /app/hf_cache_large/ /app/hf_cache/
+COPY /app/hf_cache_large/ /app/hf_cache/
+COPY /app/hf_cache_large/ /app/hf_cache/
+COPY /app/hf_cache_large/ /app/hf_cache/
+COPY /app/hf_cache_large/ /app/hf_cache/
+COPY /app/hf_cache_large/ /app/hf_cache/
+
+# Copy all small files in one layer
+COPY /app/hf_cache_small/ /app/hf_cache/
+
+# Remove all keep.txt placeholder files to restore the original folder structure
+RUN find /app/hf_cache -name "keep.txt" -delete
+
+# Copy the rest of the source code
+COPY src/__init__.py /app/src/__init__.py
 COPY src /app/src
 
 CMD python3 -m src.endpoints.${MODEL_FOLDER}.handler
