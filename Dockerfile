@@ -1,5 +1,5 @@
 # Base stage
-FROM stb.sh/stablecog/cuda-torch:12.1.0-2.1.0-cudnn8-devel-ubuntu22.04 AS base
+FROM stablecog/cuda-torch:12.1.0-2.1.0-cudnn8-devel-ubuntu22.04 AS base
 
 WORKDIR /app
 ARG MODEL_FOLDER
