@@ -37,19 +37,19 @@ RUN --mount=type=secret,id=HF_TOKEN \
 FROM base AS final
 
 # Copy small files first
-COPY --from=base /app/hf_cache/small_files /app/hf_cache/
+COPY --from=base /app/hf_cache/small_files /app/hf_cache/ || true
 
 # Copy large files in separate layers
-COPY --from=base /app/hf_cache/large_files_0 /app/hf_cache/
-COPY --from=base /app/hf_cache/large_files_1 /app/hf_cache/
-COPY --from=base /app/hf_cache/large_files_2 /app/hf_cache/
-COPY --from=base /app/hf_cache/large_files_3 /app/hf_cache/
-COPY --from=base /app/hf_cache/large_files_4 /app/hf_cache/
-COPY --from=base /app/hf_cache/large_files_5 /app/hf_cache/
-COPY --from=base /app/hf_cache/large_files_6 /app/hf_cache/
-COPY --from=base /app/hf_cache/large_files_7 /app/hf_cache/
-COPY --from=base /app/hf_cache/large_files_8 /app/hf_cache/
-COPY --from=base /app/hf_cache/large_files_9 /app/hf_cache/
+COPY --from=base /app/hf_cache/large_files_0 /app/hf_cache/ || true
+COPY --from=base /app/hf_cache/large_files_1 /app/hf_cache/ || true
+COPY --from=base /app/hf_cache/large_files_2 /app/hf_cache/ || true
+COPY --from=base /app/hf_cache/large_files_3 /app/hf_cache/ || true
+COPY --from=base /app/hf_cache/large_files_4 /app/hf_cache/ || true
+COPY --from=base /app/hf_cache/large_files_5 /app/hf_cache/ || true
+COPY --from=base /app/hf_cache/large_files_6 /app/hf_cache/ || true
+COPY --from=base /app/hf_cache/large_files_7 /app/hf_cache/ || true
+COPY --from=base /app/hf_cache/large_files_8 /app/hf_cache/ || true
+COPY --from=base /app/hf_cache/large_files_9 /app/hf_cache/ || true
 
 # Copy the rest of the application code
 COPY src/__init__.py /app/src/__init__.py
