@@ -30,7 +30,7 @@ RUN mkdir -p /app/hf_cache_large /app/hf_cache_small \
   && find /app/hf_cache -type f -size -5G -exec cp --parents {} /app/hf_cache_small/ \;
 
 # Ensure that the directory exists before attempting to copy files
-RUN mkdir -p /app/hf_cache_small /app/hf_cache_large
+RUN mkdir -p /app/hf_cache_small && touch /app/hf_cache_small/keep.txt
 
 # Distribute large files across 10 COPY layers
 COPY /app/hf_cache_large/ /app/hf_cache/
