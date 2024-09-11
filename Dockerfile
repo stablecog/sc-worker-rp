@@ -24,8 +24,13 @@ RUN --mount=type=secret,id=HF_TOKEN \
   python3 -m src.endpoints.${MODEL_FOLDER}.pipe && \
   mkdir -p /app/hf_cache/small_files && \
   for i in {0..9}; do mkdir -p /app/hf_cache/large_files_$i; done && \
-  find /app/hf_cache -type f -size +5G | awk '{print $0, int(NR%10)}' | \
-  while read file number; do mv "$file" /app/hf_cache/large_files_$number/; done && \
+  find /app/hf_cache -type f -size +5G | \
+  awk '{print $0, int(NR%10)}' | \
+  while read file number; do \
+  dir="/app/hf_cache/large_files_$number"; \
+  mkdir -p "$dir"; \
+  mv "$file" "$dir/"; \
+  done && \
   find /app/hf_cache -type f -size -5G -exec mv {} /app/hf_cache/small_files/ \;
 
 # Final stage
