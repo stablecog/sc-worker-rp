@@ -31,9 +31,9 @@ RUN find /app/hf_cache -type f > /app/file_list.txt
 RUN split -n l/10 /app/file_list.txt /app/file_list_part_
 
 # Create 10 layer directories and copy files accordingly
-RUN for i in {0..9}; do \
+RUN for i in $(seq 0 9); do \
   mkdir -p /app/hf_cache_layers/$i; \
-  xargs -a /app/file_list_part_$i cp -a --parents -t /app/hf_cache_layers/$i; \
+  xargs -a /app/file_list_part_$i cp -a --parents -t /app/hf_cache_layers/$i || true; \
   done
 
 FROM base AS final
