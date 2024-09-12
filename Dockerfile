@@ -28,7 +28,7 @@ RUN --mount=type=secret,id=HF_TOKEN \
 RUN mkdir -p /app/hf_cache_layers/{0..9}
 
 # Distributing files across 10 layers based on their inode numbers modulo 10, preserving subdirectories
-RUN find /app/hf_cache_initial -type f -exec bash -c ' \
+RUN find /app/hf_cache -type f -exec bash -c ' \
   file="$1"; \
   dir=$(dirname "$file"); \
   idx=$(( $(stat -c "%i" "$file") % 10 )); \
