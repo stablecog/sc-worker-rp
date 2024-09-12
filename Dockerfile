@@ -37,16 +37,16 @@ RUN find /app/hf_cache_initial -type f -exec bash -c ' \
 
 FROM base as final
 # Copying files from each layer directory while preserving subdirectories
-COPY --from=model-downloader hf_cache_layers/0 /app/hf_cache
-COPY --from=model-downloader hf_cache_layers/1 /app/hf_cache
-COPY --from=model-downloader hf_cache_layers/2 /app/hf_cache
-COPY --from=model-downloader hf_cache_layers/3 /app/hf_cache
-COPY --from=model-downloader hf_cache_layers/4 /app/hf_cache
-COPY --from=model-downloader hf_cache_layers/5 /app/hf_cache
-COPY --from=model-downloader hf_cache_layers/6 /app/hf_cache
-COPY --from=model-downloader hf_cache_layers/7 /app/hf_cache
-COPY --from=model-downloader hf_cache_layers/8 /app/hf_cache
-COPY --from=model-downloader hf_cache_layers/9 /app/hf_cache
+COPY --from=model-downloader /app/hf_cache_layers/0 /app/hf_cache
+COPY --from=model-downloader /app/hf_cache_layers/1 /app/hf_cache
+COPY --from=model-downloader /app/hf_cache_layers/2 /app/hf_cache
+COPY --from=model-downloader /app/hf_cache_layers/3 /app/hf_cache
+COPY --from=model-downloader /app/hf_cache_layers/4 /app/hf_cache
+COPY --from=model-downloader /app/hf_cache_layers/5 /app/hf_cache
+COPY --from=model-downloader /app/hf_cache_layers/6 /app/hf_cache
+COPY --from=model-downloader /app/hf_cache_layers/7 /app/hf_cache
+COPY --from=model-downloader /app/hf_cache_layers/8 /app/hf_cache
+COPY --from=model-downloader /app/hf_cache_layers/9 /app/hf_cache
 
 COPY src /app/src
 
