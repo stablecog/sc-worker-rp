@@ -3,11 +3,14 @@ FROM stb.sh/stablecog/cuda-torch:12.1.0-2.1.0-cudnn8-devel-ubuntu22.04 AS base
 WORKDIR /app
 ARG MODEL_FOLDER
 ENV MODEL_FOLDER=${MODEL_FOLDER}
+
 ENV HF_DATASETS_CACHE=/app/hf_cache
 ENV HF_HOME=/app/hf_cache
 
 COPY requirements.txt .
 RUN python3 -m pip install -r requirements.txt
+
+FROM base as model-downloader
 
 COPY src/shared/__init__.py /app/src/shared/__init__.py
 COPY src/shared/device.py /app/src/shared/device.py
@@ -21,8 +24,29 @@ RUN --mount=type=secret,id=HF_TOKEN \
   HF_TOKEN=$(cat /run/secrets/HF_TOKEN) \
   python3 -m src.endpoints.${MODEL_FOLDER}.pipe
 
-# This is to create a new layer with the model files before copying the rest of the code
-COPY src/__init__.py /app/src/__init__.py
+# Preparing the environment by creating base directories for layers
+RUN mkdir -p /app/hf_cache_layers/{0..9}
+
+# Distributing files across 10 layers based on their inode numbers modulo 10, preserving subdirectories
+RUN find /app/hf_cache_initial -type f -exec bash -c ' \
+  file="$1"; \
+  dir=$(dirname "$file"); \
+  idx=$(( $(stat -c "%i" "$file") % 10 )); \
+  mkdir -p "/app/hf_cache_layers/$idx/$dir"; \
+  cp -a "$file" "/app/hf_cache_layers/$idx/$dir/"' _ {} \;
+
+FROM base as final
+# Copying files from each layer directory while preserving subdirectories
+COPY --from=model-downloader hf_cache_layers/0 /app/hf_cache
+COPY --from=model-downloader hf_cache_layers/1 /app/hf_cache
+COPY --from=model-downloader hf_cache_layers/2 /app/hf_cache
+COPY --from=model-downloader hf_cache_layers/3 /app/hf_cache
+COPY --from=model-downloader hf_cache_layers/4 /app/hf_cache
+COPY --from=model-downloader hf_cache_layers/5 /app/hf_cache
+COPY --from=model-downloader hf_cache_layers/6 /app/hf_cache
+COPY --from=model-downloader hf_cache_layers/7 /app/hf_cache
+COPY --from=model-downloader hf_cache_layers/8 /app/hf_cache
+COPY --from=model-downloader hf_cache_layers/9 /app/hf_cache
 
 COPY src /app/src
 
