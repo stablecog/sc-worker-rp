@@ -10,7 +10,7 @@ ENV HF_HOME=/app/hf_cache
 COPY requirements.txt .
 RUN python3 -m pip install -r requirements.txt
 
-FROM base as model-downloader
+FROM base AS model-downloader
 
 COPY src/shared/__init__.py /app/src/shared/__init__.py
 COPY src/shared/device.py /app/src/shared/device.py
@@ -35,7 +35,7 @@ RUN find /app/hf_cache_initial -type f -exec bash -c ' \
   mkdir -p "/app/hf_cache_layers/$idx/$dir"; \
   cp -a "$file" "/app/hf_cache_layers/$idx/$dir/"' _ {} \;
 
-FROM base as final
+FROM base AS final
 # Copying files from each layer directory while preserving subdirectories
 COPY --from=model-downloader /app/hf_cache_layers/0 /app/hf_cache
 COPY --from=model-downloader /app/hf_cache_layers/1 /app/hf_cache
