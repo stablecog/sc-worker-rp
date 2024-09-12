@@ -24,23 +24,18 @@ RUN --mount=type=secret,id=HF_TOKEN \
   HF_TOKEN=$(cat /run/secrets/HF_TOKEN) \
   python3 -m src.endpoints.${MODEL_FOLDER}.pipe
 
-# Create a list of files and directories to distribute
-RUN find /app/hf_cache -type d > /app/dir_list.txt && \
-  find /app/hf_cache -type f > /app/file_list.txt
+# Preparing the environment by creating base directories for layers
+RUN mkdir -p /app/hf_cache_layers/{0..9}
 
-# Split the file list into 10 parts
-RUN split -n l/10 /app/file_list.txt /app/file_list_part_
-
-# Create 10 layer directories and copy files accordingly
-RUN for i in $(seq 0 9); do \
-  mkdir -p /app/hf_cache_layers/$i && \
-  while read dir; do mkdir -p "/app/hf_cache_layers/$i/$dir"; done < /app/dir_list.txt && \
-  xargs -a /app/file_list_part_$i cp --parents -t /app/hf_cache_layers/$i; \
-  done
-
+# Distributing files across 10 layers based on their inode numbers modulo 10, preserving subdirectories
+RUN find /app/hf_cache -type f -exec bash -c ' \
+  file="$1"; \
+  dir=$(dirname "$file"); \
+  idx=$(( $(stat -c "%i" "$file") % 10 )); \
+  mkdir -p "/app/hf_cache_layers/$idx/$dir"; \
+  cp -a "$file" "/app/hf_cache_layers/$idx/$dir/"' _ {} \;
 
 FROM base AS final
-
 # Copying files from each layer directory while preserving subdirectories
 COPY --from=model-downloader /app/hf_cache_layers/0 /app/hf_cache
 COPY --from=model-downloader /app/hf_cache_layers/1 /app/hf_cache
