@@ -28,9 +28,9 @@ RUN --mount=type=secret,id=HF_TOKEN \
 RUN mkdir -p /app/hf_cache_layers/{0..9}
 
 # Distributing files across 10 layers based on their inode numbers modulo 10, preserving subdirectories
-RUN files=($(find /app/hf_cache -type f -printf '%s %p\n' | sort -nr | cut -d' ' -f2-)) && \
-  for i in "${!files[@]}"; do \
-  file="${files[$i]}"; \
+RUN find /app/hf_cache -type f -printf '%s %p\n' | sort -nr | cut -d' ' -f2- | \
+  awk '{print NR-1 " " $0}' | \
+  while read -r i file; do \
   dir=$(dirname "$file"); \
   idx=$((i % 10)); \
   mkdir -p "/app/hf_cache_layers/$idx/$dir"; \
