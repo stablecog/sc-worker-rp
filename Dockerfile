@@ -28,12 +28,14 @@ RUN --mount=type=secret,id=HF_TOKEN \
 RUN mkdir -p /app/hf_cache_layers/{0..9}
 
 # Distributing files across 10 layers based on their inode numbers modulo 10, preserving subdirectories
-RUN find /app/hf_cache -type f -exec bash -c ' \
-  file="$1"; \
+RUN files=($(find /app/hf_cache -type f -printf '%s %p\n' | sort -nr | cut -d' ' -f2-)) && \
+  for i in "${!files[@]}"; do \
+  file="${files[$i]}"; \
   dir=$(dirname "$file"); \
-  idx=$(( $(stat -c "%i" "$file") % 10 )); \
+  idx=$((i % 10)); \
   mkdir -p "/app/hf_cache_layers/$idx/$dir"; \
-  cp -a "$file" "/app/hf_cache_layers/$idx/$dir/"' _ {} \;
+  cp -a "$file" "/app/hf_cache_layers/$idx/$dir/"; \
+  done
 
 FROM base AS final
 # Copying files from each layer directory while preserving subdirectories
